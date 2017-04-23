@@ -1,0 +1,29 @@
+{
+  "name": "docker-dashboard",
+  "version": "0.0.1",
+  "description": "Console based docker dashboard.",
+  "main": "index.js",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.7.5",
+    "dockerode": "^2.4.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pipiliang/docker-dashboard.git"
+  },
+  "keywords": [
+    "docker",
+    "dashborad"
+  ],
+  "author": "Liang Wei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pipiliang/docker-dashboard/issues"
+  },
+  "homepage": "https://github.com/pipiliang/docker-dashboard#readme"
+}
