@@ -6,7 +6,8 @@
   "dependencies": {
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.7.5",
-    "dockerode": "^2.4.3"
+    "dockerode": "^2.4.3",
+    "commander": "^2.9.0"
   },
   "devDependencies": {},
   "scripts": {
