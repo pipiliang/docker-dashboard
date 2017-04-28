@@ -1,15 +1,12 @@
 #!/usr/bin/env node
+
  
 var program = require('commander');
+var dashboard = require('./dashboard');
  
 program
-  .version('0.0.1')
-  .option('ps', 'ps all')
+  .version('v0.1.0')
   .parse(process.argv);
- 
-console.log('=>:');
 
-if (program.ps) 
-	console.log(' ps : show all active container instance ...');
-else
-	console.log(' dashboard here ');
+
+ 
