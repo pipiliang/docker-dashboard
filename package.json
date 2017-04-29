@@ -1,6 +1,6 @@
 {
   "name": "docker-dashboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Console based docker dashboard.",
   "main": "index.js",
   "bin": {
@@ -13,9 +13,17 @@
     "commander": "^2.9.0",
     "strip-ansi": "^3.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "codecov": "^1.0.1",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-jshint": "^2.0.4",
+    "gulp-jshint-html-reporter": "^0.1.3",
+    "gulp-mocha": "^3.0.1"
+  },
   "scripts": {
-    "test": "npm test"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",

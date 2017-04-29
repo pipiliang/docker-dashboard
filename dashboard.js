@@ -116,7 +116,7 @@ var helperBox = blessed.box({
 	content: ' Key   | Description\n' +
 		'-------------------------------\n' +
 		' H     | show help information.\n' +
-		' ESC   | hide help information.\n' +
+		' ESC   | hide all popup box.\n' +
 		' Up    | scroll up.\n' +
 		' Down  | scroll down.\n' +
 		' Enter | select a container.\n' +
