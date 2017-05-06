@@ -5,7 +5,7 @@ Console based docker dashboard, base on [blessed-contrib](https://github.com/yar
 ```
 $ npm i docker-dashboard -g
 ```
->Note: You need to install the docker before use
+>Note: need to install the docker before use, and only support `unix socket`.
 
 ## Usage 
 ```

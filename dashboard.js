@@ -1,148 +1,159 @@
 var Docker = require('dockerode'),
 	blessed = require('blessed'),
 	contrib = require('blessed-contrib'),
-	MemUsage = require('./lib/memusage'),
-	CPUsage = require('./lib/cpusage'),
-	NetIO = require('./lib/netio'),
-	ContainerTable = require('./lib/container-table');
-
-function dashboard() {}
-
-var docker = new Docker({
-	socketPath: '/var/run/docker.sock'
-});
+	aboutbox = require('./lib/aboutbox'),
+	containerbox = require('./lib/containerbox');
 
 var screen = blessed.screen({
-	smartCSR: true
+	smartCSR: true,
+	fullUnicode: true,
+	padding: 'auto'
 });
 
-var grid = new contrib.grid({
-	rows: 12,
-	cols: 12,
-	screen: screen
-});
-
-var containerTable = new ContainerTable(screen, grid);
-var cpu = new CPUsage(screen, grid);
-var mem = new MemUsage(screen, grid);
-var net = new NetIO(screen, grid);
-
-docker.listContainers({
-	all: true
-}, function(err, containers) {
-	containers.forEach(function(containerInfo) {
-		containerTable.draw(containerInfo);
-	});
-});
-
-docker.getEvents(function(err, stream) {
-	stream.on('data', function(chunk) {
-		var event = JSON.parse(chunk.toString());
-		if (event.Type === undefined || event.Type != 'container') {
-			return;
-		}
-
-		if (event.Action === 'start' || event.Action === 'stop' || event.Action === 'distory') {
-			containerTable.clean();
-			docker.listContainers({
-				all: true
-			}, function(err, containers) {
-				containers.forEach(function(containerInfo) {
-					containerTable.draw(containerInfo);
-				});
-			});
-		}
-	});
-});
-
-var preSelContainer;
-containerTable.on("select", function(item) {
-	var selectId = item.content.substring(0, 8);
-	if (preSelContainer != null) {
-		if (preSelContainer.id == selectId)
-			return;
-		preSelContainer.stats({
-			stream: false
-		}, undefined);
-		cpu.clean();
-		mem.clean();
-		net.clean();
-	}
-
-	selContainer = docker.getContainer(selectId);
-	preSelContainer = selContainer;
-	// if (selContainer.State != 'running')
-	// 	return;
-
-	var prerxv, pretxv;
-	selContainer.stats(function(err, stream) {
-		stream.on('data', function(chunk) {
-			var stat = JSON.parse(chunk.toString());
-			var time = stat.read.substring(12, 19);
-
-			cpu.draw(stat, time);
-			mem.draw(stat, time);
-
-			if (prerxv == null || pretxv == null) {
-				net.draw(0, 0, time);
-			} else {
-				var rxv = (stat.networks.eth0.rx_bytes - prerxv) / 1024;
-				var txv = (stat.networks.eth0.tx_bytes - pretxv) / 1024;
-				net.draw(rxv, txv, time);
-			}
-			screen.render();
-			prerxv = stat.networks.eth0.rx_bytes;
-			pretxv = stat.networks.eth0.tx_bytes;
-		});
-	});
-});
-
-screen.key(['q', 'C-c'], function(ch, key) {
-	return process.exit(0);
-});
-
-var helperBox = blessed.box({
+var bar = blessed.listbar({
 	parent: screen,
+	top: 0,
+	left: 0,
+	right: 0,
+	height: 'shrink',
+	mouse: true,
+	keys: true,
+	autoCommandKeys: true,
+	border: 'line',
+	vi: true,
+	style: {
+		bg: 'black',
+		item: {
+			bg: 'yellow',
+			fg: 'black',
+			hover: {
+				bg: 'blue'
+			}
+		},
+		selected: {
+			bg: 'blue'
+		}
+	},
+	commands: {
+		'📈 Dashboard': {
+			keys: ['d'],
+			callback: function() {
+				showNodeInfo();
+				screen.render();
+			}
+		},
+		'📦 Containers': {
+			keys: ['c'],
+			callback: function() {
+				showContainers();
+				screen.render();
+			}
+		},
+		'Images': {
+			keys: ['i'],
+			callback: function() {
+				screen.render();
+			}
+		},
+		'Networks': {
+			keys: ['n'],
+			callback: function() {
+				screen.render();
+			}
+		},
+		'💾 Volumes': {
+			keys: ['v'],
+			callback: function() {
+				screen.render();
+			}
+		},
+		'🔔 Events': {
+			keys: ['e'],
+			callback: function() {
+				screen.render();
+			}
+		},
+		'Docker': {
+			keys: ['o'],
+			callback: function() {
+				screen.render();
+			}
+		},
+		'👦 About': {
+			keys: ['a'],
+			callback: function() {
+				showHelp();
+				screen.render();
+			}
+		}
+	}
+});
+
+screen.append(bar);
+bar.focus();
+
+var showBox = blessed.box({
+	parent: screen,
+	align: 'center',
 	scrollable: true,
 	scrollstep: 1,
-	left: 'center',
-	top: 'center',
-	width: '30%',
-	height: '30%',
+	padding: {
+		// top: 1,
+		// left: 1,
+		right: -1,
+		bottom: -1
+	},
+	left: 0,
+	top: 2,
+	width: '100%',
+	height: 'shrink',
 	style: {
 		bg: 'black'
 	},
-	border: 'line',
-	content: ' Key   | Description\n' +
-		'-------------------------------\n' +
-		' H     | show help information.\n' +
-		' ESC   | hide all popup box.\n' +
-		' Up    | scroll up.\n' +
-		' Down  | scroll down.\n' +
-		' Enter | select a container.\n' +
-		' Q     | exit dashboard.',
-	keys: true,
-	mouse: true,
-	vi: true,
+	border: {
+		type: "line",
+		fg: "white"
+	},
 	alwaysScroll: true,
 	scrollbar: {
 		ch: ' ',
 		inverse: true
 	}
 });
+screen.append(showBox);
 
-helperBox.hide();
+var aboutBox, containerBox;
 
-screen.key(['h'], function(ch, key) {
-	helperBox.show();
-	screen.render();
-});
+function showNodeInfo() {
+	if (containerBox != null)
+		containerBox.hide();
 
-screen.key(['escape'], function(ch, key) {
-	helperBox.hide();
-	screen.render();
+	if (aboutBox != null)
+		aboutBox.hide();
+}
+
+function showContainers() {
+	if (aboutBox != null)
+		aboutBox.hide();
+
+	if (containerBox == null)
+		containerBox = new containerbox(screen, showBox);
+	else
+		containerBox.show();
+}
+
+function showHelp() {
+	if (containerBox != null)
+		containerBox.hide();
+
+	if (aboutBox == null)
+		aboutBox = new aboutbox(screen, showBox);
+	else
+		aboutBox.show();
+}
+
+screen.key(['q', 'C-c'], function(ch, key) {
+	return process.exit(0);
 });
 
 screen.render();
-
-module.exports = dashboard;

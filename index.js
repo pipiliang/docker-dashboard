@@ -2,11 +2,8 @@
 
  
 var program = require('commander');
-var dashboard = require('./dashboard');
+var dashboard = require('./container');
  
 program
-  .version('v0.1.0')
+  .version('v0.1.3')
   .parse(process.argv);
-
-
- 
