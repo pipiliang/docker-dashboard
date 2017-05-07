@@ -7,7 +7,7 @@ var Docker = require('dockerode'),
 var screen = blessed.screen({
 	smartCSR: true,
 	fullUnicode: true,
-	padding: 'auto'
+	autoPadding: 'auto'
 });
 
 var bar = blessed.listbar({
@@ -97,12 +97,12 @@ var showBox = blessed.box({
 	align: 'center',
 	scrollable: true,
 	scrollstep: 1,
-	padding: {
-		// top: 1,
-		// left: 1,
-		right: -1,
-		bottom: -1
-	},
+	// padding: {
+	// 	// top: 1,
+	// 	// left: 1,
+	// 	right: -1,
+	// 	bottom: -1
+	// },
 	left: 0,
 	top: 2,
 	width: '100%',

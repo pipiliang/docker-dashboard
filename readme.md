@@ -3,7 +3,7 @@ Console based docker dashboard, base on [blessed-contrib](https://github.com/yar
 
 ## Install
 ```
-$ npm i docker-dashboard -g
+$ npm install -g docker-dashboard
 ```
 >Note: need to install the docker before use, and only support `unix socket`.
 
