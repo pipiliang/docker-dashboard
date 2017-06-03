@@ -2,7 +2,7 @@
 
  
 var program = require('commander');
-var dashboard = require('./container');
+var dashboard = require('./dashboard');
  
 program
   .version('v0.1.3')

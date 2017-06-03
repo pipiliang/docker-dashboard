@@ -1,13 +1,24 @@
 var Docker = require('dockerode'),
 	blessed = require('blessed'),
 	contrib = require('blessed-contrib'),
-	aboutbox = require('./lib/aboutbox'),
-	containerbox = require('./lib/containerbox');
+	About = require('./lib/widget-about'),
+	Container = require('./lib/widget-container'),
+	Image = require('./lib/widget-images'),
+	Network = require('./lib/widget-network'),
+	Volume = require('./lib/widget-volume'),
+	Home = require('./lib/widget-home');
+
+function dashboard() {}
 
 var screen = blessed.screen({
 	smartCSR: true,
 	fullUnicode: true,
-	autoPadding: 'auto'
+	autoPadding: 'auto',
+	title: '🐳 Docker Dashboard'
+});
+
+var docker = new Docker({
+	socketPath: '/var/run/docker.sock'
 });
 
 var bar = blessed.listbar({
@@ -49,40 +60,31 @@ var bar = blessed.listbar({
 				screen.render();
 			}
 		},
-		'Images': {
+		'🏻 Images': {
 			keys: ['i'],
 			callback: function() {
+				showImages();
 				screen.render();
 			}
 		},
-		'Networks': {
+		'🕸 Networks': {
 			keys: ['n'],
 			callback: function() {
+				showNetwork();
 				screen.render();
 			}
 		},
-		'💾 Volumes': {
+		'📔 Volumes': {
 			keys: ['v'],
 			callback: function() {
-				screen.render();
-			}
-		},
-		'🔔 Events': {
-			keys: ['e'],
-			callback: function() {
-				screen.render();
-			}
-		},
-		'Docker': {
-			keys: ['o'],
-			callback: function() {
+				showVolume();
 				screen.render();
 			}
 		},
 		'👦 About': {
 			keys: ['a'],
 			callback: function() {
-				showHelp();
+				showAbout();
 				screen.render();
 			}
 		}
@@ -97,24 +99,15 @@ var showBox = blessed.box({
 	align: 'center',
 	scrollable: true,
 	scrollstep: 1,
-	// padding: {
-	// 	// top: 1,
-	// 	// left: 1,
-	// 	right: -1,
-	// 	bottom: -1
-	// },
 	left: 0,
 	top: 2,
 	width: '100%',
 	height: 'shrink',
-	style: {
-		bg: 'black'
-	},
 	border: {
 		type: "line",
 		fg: "white"
 	},
-	alwaysScroll: true,
+	alwaysScroll: false,
 	scrollbar: {
 		ch: ' ',
 		inverse: true
@@ -122,34 +115,66 @@ var showBox = blessed.box({
 });
 screen.append(showBox);
 
-var aboutBox, containerBox;
+var about, container, image, network, volume, nodeInfo = new Home(screen, showBox, docker);
 
 function showNodeInfo() {
-	if (containerBox != null)
-		containerBox.hide();
+	hide(container, about, image, network, volume);
 
-	if (aboutBox != null)
-		aboutBox.hide();
+	if (nodeInfo != null)
+		nodeInfo.show();
 }
 
 function showContainers() {
-	if (aboutBox != null)
-		aboutBox.hide();
+	hide(about, nodeInfo, image, network, volume);
 
-	if (containerBox == null)
-		containerBox = new containerbox(screen, showBox);
+	if (container == null)
+		container = new Container(screen, showBox, docker);
 	else
-		containerBox.show();
+		container.show();
 }
 
-function showHelp() {
-	if (containerBox != null)
-		containerBox.hide();
+function showImages() {
+	hide(about, nodeInfo, container, network, volume);
 
-	if (aboutBox == null)
-		aboutBox = new aboutbox(screen, showBox);
+	if (image == null)
+		image = new Image(screen, showBox, docker);
 	else
-		aboutBox.show();
+		image.show();
+}
+
+function showNetwork() {
+	hide(about, nodeInfo, container, image, volume);
+
+	if (network == null)
+		network = new Network(screen, showBox, docker);
+	else
+		network.show();
+}
+
+function showVolume() {
+	hide(about, nodeInfo, container, image, network);
+
+	if (volume == null)
+		volume = new Volume(screen, showBox, docker);
+	else
+		volume.show();
+}
+
+function showAbout() {
+	hide(container, nodeInfo, image, network, volume);
+
+	if (about == null)
+		about = new About(screen, showBox);
+	else
+		about.show();
+}
+
+function hide() {
+	for (var i in arguments) {
+		var each = arguments[i];
+		if (each != null)
+			each.hide();
+	}
 }
 
 screen.key(['q', 'C-c'], function(ch, key) {
@@ -157,3 +182,5 @@ screen.key(['q', 'C-c'], function(ch, key) {
 });
 
 screen.render();
+
+module.exports = dashboard;
