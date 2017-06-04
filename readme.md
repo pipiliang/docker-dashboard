@@ -12,7 +12,9 @@ $ npm install -g docker-dashboard
 >Note: need to install the docker before use, and only support `unix socket`.
 
 In the following environment test passed:
-OS : Ubuntu 16.04 LTS
+
+OS : Ubuntu 16.04 LTS 
+
 Docker : 1.12.6  Api 1.24
 
 ## Usage
@@ -36,6 +38,13 @@ $ docker-dashboard
 |`Q`| exit dashboard.|
 
 > Support operation with mouse.
+
+## Todo List
+
+- [ ] operate container: start / stop / restart / rm and other
+- [ ] refresh container list
+- [ ] images import and export
+- [ ] network connect and disconnect
 
 ## License
 **MIT** License
