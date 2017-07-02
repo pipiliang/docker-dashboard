@@ -12,9 +12,11 @@ $ npm install -g docker-dashboard
 >Note: need to install the docker before use, and only support `unix socket`.
 
 In the following environment test passed:
+
 |OS|Docker|
 |----|----|
 |Ubuntu 16.04 LTS|1.12.6  Api 1.24 |
+
 Other platforms and versions are not guaranteed.
 
 ## Usage
