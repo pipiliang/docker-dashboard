@@ -1,4 +1,4 @@
-## Docker Dashboard [![npm version](https://badge.fury.io/js/docker-dashboard.png)](https://www.npmjs.com/package/docker-dashboard)
+## Docker Dashboard [![npm version](https://badge.fury.io/js/docker-dashboard.png)](https://www.npmjs.com/package/docker-dashboard)![](https://www.travis-ci.org/pipiliang/docker-dashboard.svg?branch=master)
 :computer::chart_with_upwards_trend:Console based docker dashboard, base on [blessed-contrib](https://github.com/yaronn/blessed-contrib) and [blessed](https://github.com/chjj/blessed).
 
 ![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/home.PNG)
@@ -43,6 +43,7 @@ $ docker-dashboard
 
 ## Todo List
 
+- [ ] add test
 - [ ] operate container: start / stop / restart / rm and other
 - [ ] refresh container list
 - [ ] images import and export
