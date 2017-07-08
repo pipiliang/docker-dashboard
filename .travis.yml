@@ -1,0 +1,22 @@
+sudo: required
+os:
+- linux
+language: node_js
+node_js:
+- '6'
+- '7'
+cache:
+- apt: true
+- directories:
+  - "$HOME/.npm"
+  - node_modules
+before_script:
+  - npm install
+script: 
+  - npm test
+after_success:
+  - echo 'test passed'
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+\.\d+/
