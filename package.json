@@ -25,7 +25,7 @@
     "gulp-mocha": "^3.0.1"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "echo start test"
   },
   "repository": {
     "type": "git",

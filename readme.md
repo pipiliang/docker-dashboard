@@ -1,4 +1,4 @@
-## Docker Dashboard [![npm version](https://badge.fury.io/js/docker-dashboard.png)](https://www.npmjs.com/package/docker-dashboard)![](https://www.travis-ci.org/pipiliang/docker-dashboard.svg?branch=master)
+## Docker Dashboard [![npm version](https://badge.fury.io/js/docker-dashboard.svg)](https://www.npmjs.com/package/docker-dashboard)[![Build Status](https://travis-ci.org/pipiliang/docker-dashboard.svg?branch=master)](https://travis-ci.org/pipiliang/docker-dashboard)
 :computer::chart_with_upwards_trend:Console based docker dashboard, base on [blessed-contrib](https://github.com/yaronn/blessed-contrib) and [blessed](https://github.com/chjj/blessed).
 
 ![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/home.PNG)
@@ -15,7 +15,7 @@ In the following environment test passed:
 
 |OS|Docker|
 |----|----|
-|Ubuntu 16.04 LTS|1.12.6  Api 1.24 |
+|Ubuntu 16.04 LTS|1.12.6|
 
 Other platforms and versions are not guaranteed.
 
@@ -41,7 +41,7 @@ $ docker-dashboard
 
 > Support operation with mouse.
 
-## Todo List
+## Todo
 
 - [ ] add test
 - [ ] operate container: start / stop / restart / rm and other
