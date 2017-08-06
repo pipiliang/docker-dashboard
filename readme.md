@@ -1,7 +1,7 @@
 ## Docker Dashboard [![npm version](https://badge.fury.io/js/docker-dashboard.svg)](https://www.npmjs.com/package/docker-dashboard) [![Build Status](https://travis-ci.org/pipiliang/docker-dashboard.svg?branch=master)](https://travis-ci.org/pipiliang/docker-dashboard)
+
 :computer::chart_with_upwards_trend:Console based docker dashboard, base on [blessed](https://github.com/chjj/blessed) and [blessed-contrib](https://github.com/yaronn/blessed-contrib).
 
-![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/home.PNG)
 ![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/containers.PNG)
 
 ## Install
@@ -43,7 +43,6 @@ $ docker-dashboard
 
 ## Todo
 
-- [ ] add test
 - [ ] operate container: start / stop / restart / rm and other
 - [ ] refresh container list
 - [ ] images import and export
