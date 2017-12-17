@@ -44,7 +44,7 @@ $ docker-dashboard
 ## Todo
 
 - [ ] operate container: start / stop / restart / rm and other
-- [ ] refresh container list
+- [ ] auto refresh container list
 - [ ] images import and export
 - [ ] network connect and disconnect
 
