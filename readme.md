@@ -17,7 +17,7 @@ In the following environment test passed:
 |----|----|
 |Ubuntu 16.04 LTS|1.12.6|
 
-Other platforms and versions are not guaranteed.
+* Other platforms and versions are not guaranteed.*
 
 ## Usage
 
@@ -43,10 +43,7 @@ $ docker-dashboard
 
 ## Todo
 
-- [ ] operate container: start / stop / restart / rm and other
 - [ ] auto refresh container list
-- [ ] images import and export
-- [ ] network connect and disconnect
 
 ## Thanks
 - [blessed-contrib](https://github.com/yaronn/blessed-contrib)
@@ -54,4 +51,4 @@ $ docker-dashboard
 - [dockerode](https://github.com/apocas/dockerode)
 
 ## License
-**MIT** License
+[![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/pipiliang/made/blob/master/LICENSE)
