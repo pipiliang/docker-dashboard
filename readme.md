@@ -17,7 +17,7 @@ In the following environment test passed:
 |----|----|
 |Ubuntu 16.04 LTS|1.12.6|
 
-* Other platforms and versions are not guaranteed.*
+* Other platforms and versions are not guaranteed. *
 
 ## Usage
 
