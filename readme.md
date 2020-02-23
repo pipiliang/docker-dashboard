@@ -4,7 +4,7 @@
 
 ![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/containers.PNG)
 
-## Install (无力维护了，Sorry！)
+## Install (No longer maintain)
 
 ```
 $ npm install -g docker-dashboard
