@@ -60,14 +60,14 @@ var bar = blessed.listbar({
 				screen.render();
 			}
 		},
-		'🏻 Images': {
+		'📑️ Images': {
 			keys: ['i'],
 			callback: function() {
 				showImages();
 				screen.render();
 			}
 		},
-		'🕸 Networks': {
+		'🕸  Networks': {
 			keys: ['n'],
 			callback: function() {
 				showNetwork();
@@ -81,7 +81,7 @@ var bar = blessed.listbar({
 				screen.render();
 			}
 		},
-		'👦 About': {
+		'️🦍 About': {
 			keys: ['a'],
 			callback: function() {
 				showAbout();

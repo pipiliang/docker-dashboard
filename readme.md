@@ -17,7 +17,8 @@ In the following environment test passed:
 |----|----|
 |Ubuntu 16.04 LTS|1.12.6|
 
-* Other platforms and versions are not guaranteed. *
+
+**Other platforms and versions are not guaranteed.**
 
 ## Usage
 
@@ -25,7 +26,7 @@ In the following environment test passed:
 $ docker-dashboard
 ```
 
-### Shortcut
+## Shortcut
 |shortcut|description|
 |----|----|
 |`D`| show node info, warm info and others.|
@@ -41,9 +42,14 @@ $ docker-dashboard
 
 > Support operation with mouse.
 
-## Todo
-
-- [ ] auto refresh container list
+## Develop
+```
+$ git clone git@github.com:pipiliang/docker-dashboard
+$ cd docker-dashboard
+$ npm i
+$ npm run compile
+$ npm start
+```
 
 ## Thanks
 - [blessed-contrib](https://github.com/yaronn/blessed-contrib)
