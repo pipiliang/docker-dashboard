@@ -1,22 +1,21 @@
 import { DockerDashboard } from "../dockerdashboard";
-import { WidgetHelper } from "../common/widgethelper";
 import { Widget } from "./widget";
+import { WidgetHelper } from "../common/widgethelper";
 
-
-export class ContainerWidget extends Widget {
-    private table: any;
+export class ImageWidget extends Widget {
+    private imageTable: any;
 
     constructor(dockerdashboard: DockerDashboard) {
         super(dockerdashboard);
     }
 
     getCommandName(): string {
-        return 'Containers';
+        return 'Images';
     }
 
     getCommandKey() {
         return {
-            keys: ['C'],
+            keys: ['I'],
             callback: () => {
                 this.render();
             }
@@ -24,16 +23,16 @@ export class ContainerWidget extends Widget {
     }
 
     public hide() {
-        this.table.hide();
+        this.imageTable.hide();
     }
     public show() {
-        this.table.show();
+        this.imageTable.show();
     }
 
     renderWidget(box: any) {
-        this.table = WidgetHelper.renderTable(box, 0, 0, '100%-2', '40%-2', 'Containers');
-        this.table.setData([
-            ['Id', 'Name', 'Image', 'IP', 'Ports', 'State']
+        this.imageTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '50%', 'Images');
+        this.imageTable.setData([
+            ['Id', 'Repository', 'Tag', 'Size', 'Created']
         ]);
     }
 }

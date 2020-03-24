@@ -32,7 +32,7 @@ export class HelpWidget extends Widget {
     renderWidget(box: any) {
         this.widget = blessed.box({
             parent: box,
-            label: ' About ',
+            label: ' Help ',
             scrollable: true,
             scrollstep: 1,
             left: 'center',

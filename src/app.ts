@@ -6,7 +6,7 @@ const { Command } = require('commander');
 const program = new Command();
 program
     .version('v0.1.4')
-    .option('-e, --emoji', 'show emoji')
+    // .option('-e, --emoji', 'show emoji')
     .parse(process.argv);
 
 // startup app

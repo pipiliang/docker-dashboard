@@ -1,8 +1,8 @@
 import { DockerDashboard } from "../dockerdashboard";
-import { WidgetHelper } from "../common/widgethelper";
-import { Command } from "../commands/command";
+import { Command } from "../api/command";
+import { Render } from "../api/render";
 
-export abstract class Widget implements Command {
+export abstract class Widget implements Render, Command {
 
     private dockerdashboard: DockerDashboard;
     private boxWidget: any;
@@ -24,6 +24,7 @@ export abstract class Widget implements Command {
     public render() {
         this.renderWidget(this.dockerdashboard.getBox());
         this.dockerdashboard.active(this);
+        this.dockerdashboard.getDashboard().render();
     }
 
     public getWidget() {

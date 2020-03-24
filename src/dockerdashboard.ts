@@ -1,5 +1,6 @@
 import { WidgetMediator } from "./widgets/widgetmediator";
 import { Widget } from "./widgets/widget";
+import { WidgetHelper } from "./common/widgethelper";
 
 const blessed = require('blessed');
 
@@ -31,7 +32,6 @@ export class DockerDashboard {
 		this.activeWidget.show();
 		this.dashboard.render();
 	}
-
 
 	public getDashboard() {
 		return this.dashboard;
@@ -84,23 +84,6 @@ export class DockerDashboard {
 	}
 
 	private initBox() {
-		this.box = blessed.box({
-			parent: this.dashboard,
-			align: 'center',
-			scrollable: true,
-			scrollstep: 1,
-			left: 0,
-			top: 2,
-			width: '100%',
-			height: 'shrink',
-			border: {
-				type: "line",
-				fg: 0
-			},
-			alwaysScroll: false,
-			scrollbar: {
-				ch: ' '
-			}
-		});
+		this.box = WidgetHelper.renderBox(this.dashboard);
 	}
 }
