@@ -2,7 +2,7 @@ import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetHelper } from "../common/widgethelper";
 import { Dockerode } from "../common/dockerode";
-import { Logger } from "../common/logger";
+import { Log } from "../common/log";
 
 export class VolumeWidget extends Widget {
     private volumeTable: any;
@@ -17,9 +17,12 @@ export class VolumeWidget extends Widget {
 
     getCommandKey() {
         return {
-            keys: ['V'],
+            keys: ['v'],
             callback: () => {
-                this.render();
+                if (!this.volumeTable) {
+                    this.render();
+                }
+                this.active();
             }
         };
     }
@@ -31,22 +34,9 @@ export class VolumeWidget extends Widget {
         this.volumeTable.show();
     }
 
-    renderWidget(box: any) {
+    protected async renderWidget(box: any) {
         this.volumeTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', '');
-        const data = [['Name', 'Driver', 'Mountpoint']];
-        
-        Dockerode.instance.listVolumes((err: any, result: any) => {
-            if (result && result.Volumes) {
-                result.Volumes.forEach((v: any) => {
-                    var row = [];
-                    row.push(v.Name);
-                    row.push(v.Driver);
-                    row.push(v.Mountpoint);
-                    data.push(row);
-                });
-            }
-        });
-        Logger.instance.info(data);
+        const data = await Dockerode.instance.listVolumes();
         this.volumeTable.setData(data);
     }
 }

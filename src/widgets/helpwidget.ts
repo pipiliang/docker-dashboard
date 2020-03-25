@@ -17,7 +17,10 @@ export class HelpWidget extends Widget {
         return {
             keys: ['h'],
             callback: () => {
-                this.render();
+                if (!this.widget) {
+                    this.render();
+                }
+                this.active();
             }
         };
     }

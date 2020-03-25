@@ -3,6 +3,7 @@ import { WidgetHelper } from "../common/widgethelper";
 import { Color } from "../common/color";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/dockerode";
+import { Log } from "../common/log";
 
 const os = require('os');
 
@@ -18,9 +19,12 @@ export class HomeWidget extends Widget {
 
     public getCommandKey() {
         return {
-            keys: ['D'],
+            keys: ['d'],
             callback: () => {
-                this.render()
+                if (!this.table) {
+                    this.render();
+                }
+                this.active();
             }
         };
     }
@@ -32,12 +36,8 @@ export class HomeWidget extends Widget {
         this.table.show();
     }
 
-    public renderWidget(box: any) {
+    protected async renderWidget(box: any) {
         this.table = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', '')
-        this.table.setData(this.getData());
-    };
-
-    private getData() {
         const data = [
             [Color.title('Node Info'), ''],
             [Color.blue('Name'), os.hostname()],
@@ -49,20 +49,21 @@ export class HomeWidget extends Widget {
         ];
 
         data.push(['', '']);
-        data.push([Color.title('Docker Info'), '']);
-        Dockerode.instance.version().then((v: any) => {
-            data.push([Color.blue('Docker version'), v.Version]);
-            data.push([Color.blue('Docker api version'), v.ApiVersion]);
-            data.push([Color.blue('Go version'), v.GoVersion]);
-            data.push([Color.blue('Build'), v.GitCommit]);
-            data.push([Color.blue('Build time'), v.BuildTime]);
-            data.push([Color.blue('Experimental'), v.Experimental]);
-        }).catch((ex: any) => {
-            data.push(['some error occurs when connect docker', '']);
-        });
+        try {
+            const versionData = await Dockerode.instance.version();
+            versionData.forEach((vData: []) => data.push(vData));
 
-        return data;
-    }
+            const dockerInfo = await Dockerode.instance.information();
+            dockerInfo.forEach((info: []) => data.push(info));
+
+            const images = await Dockerode.instance.totalImages();
+            images.forEach((image: []) => data.push(image));
+        } catch (error) {
+            Log.info(error);
+        }
+
+        this.table.setData(data);
+    };
 
     private getCPUs(): string {
         const cups = os.cpus();

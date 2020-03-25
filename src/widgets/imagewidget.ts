@@ -1,6 +1,7 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetHelper } from "../common/widgethelper";
+import { Dockerode } from "../common/dockerode";
 
 export class ImageWidget extends Widget {
     private imageTable: any;
@@ -15,9 +16,12 @@ export class ImageWidget extends Widget {
 
     getCommandKey() {
         return {
-            keys: ['I'],
+            keys: ['i'],
             callback: () => {
-                this.render();
+                if (!this.imageTable) {
+                    this.render();
+                }
+                this.active();
             }
         };
     }
@@ -25,14 +29,14 @@ export class ImageWidget extends Widget {
     public hide() {
         this.imageTable.hide();
     }
+
     public show() {
         this.imageTable.show();
     }
 
-    renderWidget(box: any) {
-        this.imageTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '50%', 'Images');
-        this.imageTable.setData([
-            ['Id', 'Repository', 'Tag', 'Size', 'Created']
-        ]);
+    protected async renderWidget(box: any) {
+        this.imageTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', 'Images');
+        const data = await Dockerode.instance.listImages();
+        this.imageTable.setData(data);
     }
 }

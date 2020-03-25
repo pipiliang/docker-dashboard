@@ -5,7 +5,6 @@ import { Render } from "../api/render";
 export abstract class Widget implements Render, Command {
 
     private dockerdashboard: DockerDashboard;
-    private boxWidget: any;
 
     constructor(dockerdashboard: DockerDashboard) {
         this.dockerdashboard = dockerdashboard;
@@ -19,16 +18,13 @@ export abstract class Widget implements Render, Command {
 
     public abstract show(): any;
 
-    protected abstract renderWidget(box: any): any;
+    protected abstract renderWidget(box: any): void;
 
-    public render() {
-        this.renderWidget(this.dockerdashboard.getBox());
+    public async render() {
+        await this.renderWidget(this.dockerdashboard.getBox());
+    }
+
+    public active() {
         this.dockerdashboard.active(this);
-        this.dockerdashboard.getDashboard().render();
     }
-
-    public getWidget() {
-        return this.boxWidget;
-    }
-
 }
