@@ -4,7 +4,7 @@
 
 ![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/containers.PNG)
 
-## Install (No longer maintain)
+## Install
 
 ```
 $ npm install -g docker-dashboard
@@ -13,12 +13,12 @@ $ npm install -g docker-dashboard
 
 In the following environment test passed:
 
-|OS|Docker|
-|----|----|
-|Ubuntu 16.04 LTS|1.12.6|
+|OS|Docker|Nodejs|
+|----|----|----|
+|Ubuntu 16.04 LTS|v1.12.6|v8.10.0|
 
 
-**Other platforms and versions are not guaranteed.**
+**Other system and versions are not guaranteed.**
 
 ## Usage
 
@@ -34,7 +34,7 @@ $ docker-dashboard
 |`I`| show image list.|
 |`N`| show network list.|
 |`V`| show volume list.|
-|`A`| about.|
+|`H`| help.|
 |`↑`| scroll up.|
 |`↓`| scroll down.|
 |`Enter`| select a container and show statistics.|
@@ -43,6 +43,7 @@ $ docker-dashboard
 > Support operation with mouse.
 
 ## Develop
+
 ```
 $ git clone git@github.com:pipiliang/docker-dashboard
 $ cd docker-dashboard

@@ -15,7 +15,7 @@ export class VolumeWidget extends Widget {
         return 'Volumes';
     }
 
-    getCommandKey() {
+    getCommandKey(): { [key: string]: any } {
         return {
             keys: ['v'],
             callback: () => {

@@ -22,7 +22,7 @@ export class ContainerWidget extends Widget {
         return 'Containers';
     }
 
-    getCommandKey() {
+    getCommandKey(): { [key: string]: any } {
         return {
             keys: ['c'],
             callback: () => {
@@ -63,7 +63,7 @@ export class ContainerWidget extends Widget {
         box.append(this.mem);
         this.net = WidgetHelper.renderLine({ left: 0, bottom: 0 }, '50%-1', '30%-1', 'white', 'Net I/O (B)', true);
         box.append(this.net);
-        this.log = WidgetHelper.renderInspectBox(box, 0, 0, '50%-1', '30%-1', 'inspect');
+        this.log = WidgetHelper.renderInspectBox(box, 0, 0, '50%-1', '30%-1', ' Inspect ');
         this.table.on('select', (container: any) => {
             this.showSelectContainer(container);
         });

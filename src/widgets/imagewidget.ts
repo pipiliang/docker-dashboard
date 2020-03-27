@@ -14,7 +14,7 @@ export class ImageWidget extends Widget {
         return 'Images';
     }
 
-    getCommandKey() {
+    getCommandKey(): { [key: string]: any } {
         return {
             keys: ['i'],
             callback: () => {

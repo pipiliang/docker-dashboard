@@ -14,7 +14,7 @@ export class NetworkWidget extends Widget {
         return 'Network';
     }
 
-    getCommandKey() {
+    getCommandKey(): { [key: string]: any } {
         return {
             keys: ['n'],
             callback: () => {

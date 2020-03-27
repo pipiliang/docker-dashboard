@@ -12,7 +12,7 @@ export abstract class Widget implements Render, Command {
 
     public abstract getCommandName(): string;
 
-    public abstract getCommandKey(): any;
+    public abstract getCommandKey(): { [key: string]: any };
 
     public abstract hide(): any;
 
@@ -24,7 +24,11 @@ export abstract class Widget implements Render, Command {
         await this.renderWidget(this.dockerdashboard.getBox());
     }
 
-    public active() {
+    protected active() {
         this.dockerdashboard.active(this);
+    }
+
+    protected refresh() {
+        this.dockerdashboard.getDashboard().render();
     }
 }

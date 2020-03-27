@@ -11,11 +11,12 @@ export class WidgetMediator {
     private widgets: Array<Widget> = new Array<Widget>();
 
     constructor(dockerdashboard: DockerDashboard) {
+        //todo DI
         this.widgets.push(new HomeWidget(dockerdashboard));
-        this.widgets.push(new ContainerWidget(dockerdashboard))
-        this.widgets.push(new ImageWidget(dockerdashboard))
-        this.widgets.push(new NetworkWidget(dockerdashboard))
-        this.widgets.push(new VolumeWidget(dockerdashboard))
+        this.widgets.push(new ContainerWidget(dockerdashboard));
+        this.widgets.push(new ImageWidget(dockerdashboard));
+        this.widgets.push(new NetworkWidget(dockerdashboard));
+        this.widgets.push(new VolumeWidget(dockerdashboard));
         this.widgets.push(new HelpWidget(dockerdashboard));
     }
 

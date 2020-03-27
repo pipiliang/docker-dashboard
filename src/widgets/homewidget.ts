@@ -17,7 +17,7 @@ export class HomeWidget extends Widget {
         return 'Dashboard';
     }
 
-    public getCommandKey() {
+    public getCommandKey(): { [key: string]: any } {
         return {
             keys: ['d'],
             callback: () => {
@@ -44,7 +44,7 @@ export class HomeWidget extends Widget {
             [Color.blue('OS'), os.platform() + '-' + os.arch()],
             [Color.blue('Release'), os.release()],
             [Color.blue('CPUs'), this.getCPUs()],
-            [Color.blue('Memory'), (os.totalmem() / 1000 / 1000 / 1000).toFixed(1) + 'GB'],
+            [Color.blue('Memory'), (os.totalmem() / 1000 / 1000 / 1000).toFixed(1) + ' GB'],
             [Color.blue('Up Time'), (os.uptime() / 60 / 60).toFixed(0) + ' Hours']
         ];
 
@@ -63,6 +63,7 @@ export class HomeWidget extends Widget {
         }
 
         this.table.setData(data);
+        this.refresh();
     };
 
     private getCPUs(): string {

@@ -13,7 +13,7 @@ export class HelpWidget extends Widget {
         return 'Help';
     }
 
-    getCommandKey() {
+    getCommandKey(): { [key: string]: any } {
         return {
             keys: ['h'],
             callback: () => {

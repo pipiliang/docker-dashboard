@@ -1,7 +1,7 @@
 export interface Command {
-    
+
     getCommandName(): string;
 
-    getCommandKey(): any;
-    
+    getCommandKey(): { [key: string]: any };
+
 }

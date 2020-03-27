@@ -54,7 +54,7 @@ export class WidgetHelper {
         });
     }
 
-    public static renderText(parent: any, top: any, left: any, width: any, heigth: any, content: string) {
+    public static renderText(parent: any, top: any, left: any, width: any, heigth: any, content: string): any {
         return blessed.text({
             parent: parent,
             top: top,
@@ -67,7 +67,7 @@ export class WidgetHelper {
         });
     };
 
-    public static renderLine(opts: any, width: any, height: any, color: any, label: any, showLegend = false, legendWidth = 4) {
+    public static renderLine(opts: any, width: any, height: any, color: any, label: any, showLegend = false, legendWidth = 4): any {
         return new contrib.line({
             top: opts.top,
             left: opts.left,
@@ -94,7 +94,7 @@ export class WidgetHelper {
         });
     };
 
-    public static renderInspectBox(parent: any, right: any, bottom: any, width: any, height: any, label: any) {
+    public static renderInspectBox(parent: any, right: any, bottom: any, width: any, height: any, label: any): any {
         return blessed.box({
             parent: parent,
             label: label,
