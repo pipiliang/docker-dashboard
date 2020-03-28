@@ -7,13 +7,7 @@ const program = new Command();
 
 program
     .version(pkg.version)
-    // .option('-e, --emoji', 'show emoji')
     .parse(process.argv);
 
-// startup app
 const dockerDashboader = new DockerDashboard();
-if (program.emoji) {
-
-} else {
-    dockerDashboader.startup();
-}
+dockerDashboader.startup();

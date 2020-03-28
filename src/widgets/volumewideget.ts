@@ -1,6 +1,6 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
-import { WidgetHelper } from "../common/widgethelper";
+import { WidgetRender } from "../common/widgetrender";
 import { Dockerode } from "../common/dockerode";
 import { Log } from "../common/log";
 
@@ -35,7 +35,7 @@ export class VolumeWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.volumeTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', '');
+        this.volumeTable = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', '');
         const data = await Dockerode.instance.listVolumes();
         this.volumeTable.setData(data);
     }

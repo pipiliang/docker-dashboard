@@ -1,4 +1,4 @@
-import { Color } from "./color";
+import { ColorText } from "./color";
 import { Log } from "./log";
 
 const Docker = require('dockerode');
@@ -29,13 +29,13 @@ export class Dockerode {
                     if (!version) {
                         reject([]);
                     }
-                    const data = [[Color.title('Docker Version'), '']];
-                    data.push([Color.blue('Docker version'), version.Version]);
-                    data.push([Color.blue('Docker api version'), version.ApiVersion]);
-                    data.push([Color.blue('Go version'), version.GoVersion]);
-                    data.push([Color.blue('Build'), version.GitCommit]);
-                    data.push([Color.blue('Build time'), version.BuildTime]);
-                    data.push([Color.blue('Experimental'), version.Experimental ? version.Experimental : "--"]);
+                    const data = [[ColorText.title('Docker Version'), '']];
+                    data.push([ColorText.blue('Docker version'), version.Version]);
+                    data.push([ColorText.blue('Docker api version'), version.ApiVersion]);
+                    data.push([ColorText.blue('Go version'), version.GoVersion]);
+                    data.push([ColorText.blue('Build'), version.GitCommit]);
+                    data.push([ColorText.blue('Build time'), version.BuildTime]);
+                    data.push([ColorText.blue('Experimental'), version.Experimental ? version.Experimental : "--"]);
                     resolve(data);
                 }).catch((ex: any) => {
                     Log.error(ex);
@@ -45,34 +45,36 @@ export class Dockerode {
     }
 
     public async information(): Promise<any> {
+
         return new Promise((resolve, reject) => {
+            const data: any[] = [];
             this.docker.info()
                 .then((info: any) => {
-                    const data = [];
                     if (!info) {
-                        reject([]);
+                        reject([])
                     }
                     const isSwarm = info.Swarm.LocalNodeState === 'active';
-                    data.push([Color.title('Swarm Info'), '']);
+                    data.push(['', '']);
+                    data.push([ColorText.title('Swarm Info'), '']);
                     if (isSwarm) {
-                        data.push([Color.blue('(This node is part of a Swarm cluster)'), '']);
+                        data.push([ColorText.blue('(This node is part of a Swarm cluster)'), '']);
                     }
-                    data.push([Color.blue('Node role'), isSwarm ? this.role(info.Swarm) : '-']);
-                    data.push([Color.blue('Node id'), isSwarm ? info.Swarm.NodeID : '-']);
-                    data.push([Color.blue('Nodes in the cluster'), isSwarm ? info.Swarm.Nodes.toString() : '-']);
-                    data.push([Color.blue('Managers in the cluster'), isSwarm ? info.Swarm.Managers.toString() : '-']);
+                    data.push([ColorText.blue('Node role'), isSwarm ? this.role(info.Swarm) : '-']);
+                    data.push([ColorText.blue('Node id'), isSwarm ? info.Swarm.NodeID : '-']);
+                    data.push([ColorText.blue('Nodes in the cluster'), isSwarm ? info.Swarm.Nodes.toString() : '-']);
+                    data.push([ColorText.blue('Managers in the cluster'), isSwarm ? info.Swarm.Managers.toString() : '-']);
 
                     data.push(['', '']);
-                    data.push([Color.title('Containers'), '']);
-                    data.push([Color.blue('Total'), info.Containers.toString()]);
-                    data.push([Color.blue('Running'), Color.cyan(info.ContainersRunning.toString())]);
-                    data.push([Color.blue('Stopped'), Color.red(info.ContainersStopped.toString())]);
-                    data.push([Color.blue('Paused'), Color.yellow(info.ContainersPaused.toString())]);
+                    data.push([ColorText.title('Containers'), '']);
+                    data.push([ColorText.blue('Total'), info.Containers.toString()]);
+                    data.push([ColorText.blue('Running'), ColorText.cyan(info.ContainersRunning.toString())]);
+                    data.push([ColorText.blue('Stopped'), ColorText.red(info.ContainersStopped.toString())]);
+                    data.push([ColorText.blue('Paused'), ColorText.yellow(info.ContainersPaused.toString())]);
 
                     resolve(data);
                 }).catch((ex: any) => {
                     Log.error(ex);
-                    reject([]);
+                    reject(data);
                 })
         });
     }
@@ -127,9 +129,9 @@ export class Dockerode {
                         reject("image is null");
                         return;
                     }
-                    data.push([Color.title('Images'), '']);
-                    data.push([Color.blue('Total'), images.length ? images.length.toString() : '0']);
-                    data.push([Color.blue('Size'), this.sizeOf(images) + ' GB'])
+                    data.push([ColorText.title('Images'), '']);
+                    data.push([ColorText.blue('Total'), images.length ? images.length.toString() : '0']);
+                    data.push([ColorText.blue('Size'), this.sizeOf(images) + ' GB'])
                     resolve(data);
                 }).catch((ex: any) => {
                     Log.info(ex);
@@ -185,7 +187,7 @@ export class Dockerode {
                     containers.forEach((container: any) => {
                         data.push(this.toRow(container));
                     });
-                    
+
                     resolve(data);
                 }).catch((ex: any) => {
                     Log.error(ex);

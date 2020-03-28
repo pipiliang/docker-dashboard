@@ -1,9 +1,37 @@
+import { Color } from "./color";
+
 const blessed = require('blessed');
 const contrib = require('blessed-contrib');
 
-export class WidgetHelper {
+export class WidgetRender {
 
-    public static renderTable(parent: any, top: any, left: any, width: any, height: any, label: any) {
+    public static form(title: string) {
+        return blessed.screen({ smartCSR: true, fullUnicode: true, autoPadding: true, title: title });
+    }
+
+    public static menuBar(parent: any, commands: { [name: string]: any }) {
+        const bar = blessed.listbar({
+            parent: parent,
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 'shrink',
+            mouse: true,
+            keys: true,
+            autoCommandKeys: true,
+            border: 'line',
+            style: {
+                bg: Color.black,
+                item: { bg: Color.yellow, fg: Color.black, hover: { bg: Color.blue } },
+                selected: { bg: Color.blue }
+            },
+            commands: commands
+        });
+        bar.focus();
+        return bar;
+    }
+
+    public static table(parent: any, top: any, left: any, width: any, height: any, label: any) {
         return blessed.listtable({
             parent: parent,
             top: top,
@@ -14,29 +42,18 @@ export class WidgetHelper {
             keys: true,
             width: width,
             height: height,
-            vi: true,
             mouse: true,
             style: {
-                fg: 'white',
-                header: {
-                    fg: 'blue',
-                    bold: true
-                },
-                border: {
-                    fg: 'black'
-                },
-                cell: {
-                    fg: 'magenta',
-                    selected: {
-                        bg: 'blue'
-                    }
-                }
+                fg: Color.white,
+                header: { fg: Color.blue, bold: true },
+                border: { fg: Color.black },
+                cell: { fg: Color.magenta, selected: { bg: Color.blue } }
             },
             label: label
         });
     };
 
-    public static renderBox(parent: any) {
+    public static box(parent: any) {
         return blessed.box({
             parent: parent,
             align: 'center',
@@ -54,7 +71,7 @@ export class WidgetHelper {
         });
     }
 
-    public static renderText(parent: any, top: any, left: any, width: any, heigth: any, content: string): any {
+    public static text(parent: any, top: any, left: any, width: any, heigth: any, content: string): any {
         return blessed.text({
             parent: parent,
             top: top,
@@ -67,7 +84,7 @@ export class WidgetHelper {
         });
     };
 
-    public static renderLine(opts: any, width: any, height: any, color: any, label: any, showLegend = false, legendWidth = 4): any {
+    public static line(opts: any, width: any, height: any, color: any, label: any, showLegend = false, legendWidth = 4): any {
         return new contrib.line({
             top: opts.top,
             left: opts.left,
@@ -94,7 +111,7 @@ export class WidgetHelper {
         });
     };
 
-    public static renderInspectBox(parent: any, right: any, bottom: any, width: any, height: any, label: any): any {
+    public static inspectBox(parent: any, right: any, bottom: any, width: any, height: any, label: any): any {
         return blessed.box({
             parent: parent,
             label: label,
@@ -105,17 +122,11 @@ export class WidgetHelper {
             width: width,
             height: height,
             align: 'left',
-            style: {
-                fg: 'blue'
-            },
-            border: {
-                type: 'line',
-                fg: 'cyan'
-            },
+            style: { fg: Color.blue },
+            border: { type: 'line', fg: Color.cyan },
             content: '',
             keys: true,
             mouse: true,
-            vi: true,
             alwaysScroll: true,
             scrollbar: {
                 ch: ' ',

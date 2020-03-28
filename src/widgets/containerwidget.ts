@@ -1,7 +1,8 @@
 import { DockerDashboard } from "../dockerdashboard";
-import { WidgetHelper } from "../common/widgethelper";
+import { WidgetRender } from "../common/widgetrender";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/dockerode";
+import { Log } from "../common/log";
 
 
 export class ContainerWidget extends Widget {
@@ -35,38 +36,45 @@ export class ContainerWidget extends Widget {
     }
 
     public hide() {
-        this.table.hide();
-        // this.text.hide();
-        // this.net.hide();
-        // this.mem.hide();
-        // this.cpu.hide();
-        // this.log.hide();
+        this.hideAll(this.table, this.text, this.mem, this.cpu, this.net, this.log);
     }
 
     public show() {
-        this.table.show();
-        // this.text.show();
-        // this.net.show();
-        // this.mem.show();
-        // this.cpu.show();
-        // this.log.show();
+        this.showAll(this.table, this.text, this.mem, this.cpu, this.net, this.log);
+    }
+
+    private showAll(...widgets: any[]) {
+        widgets.forEach((widget: any) => {
+            if (widget) { widget.show(); }
+        })
+    }
+
+    private hideAll(...widgets: any[]) {
+        widgets.forEach((widget: any) => {
+            if (widget) { widget.hide(); }
+        })
     }
 
     protected async renderWidget(box: any) {
-        this.table = WidgetHelper.renderTable(box, 0, 0, '100%-2', '40%-2', 'Containers');
-        const data = await Dockerode.instance.listContainers();
-        this.table.setData(data);
-        this.text = WidgetHelper.renderText(box, '40%-2', 0, '100%-2', 2, '{bold}✔  Container Stats{bold}');
-        this.cpu = WidgetHelper.renderLine({ top: '40%', left: 0 }, '50%-1', '30%', 'red', 'CPU Usage (%)');
+        try {
+            this.table = WidgetRender.table(box, 0, 0, '100%-2', '40%-2', 'Containers');
+            const data = await Dockerode.instance.listContainers();
+            this.table.setData(data);
+            this.table.on('select', (container: any) => {
+                this.showSelectContainer(container);
+            });
+        } catch (error) {
+            Log.error(error);
+        }
+
+        this.text = WidgetRender.text(box, '40%-2', 0, '100%-2', 2, '{bold}✔  Container Stats{bold}');
+        this.cpu = WidgetRender.line({ top: '40%', left: 0 }, '50%-1', '30%', 'red', 'CPU Usage (%)');
         box.append(this.cpu);
-        this.mem = WidgetHelper.renderLine({ top: '40%', right: 0 }, '50%-1', '30%', 'magenta', 'Memory Usage (MB)');
+        this.mem = WidgetRender.line({ top: '40%', right: 0 }, '50%-1', '30%', 'magenta', 'Memory Usage (MB)');
         box.append(this.mem);
-        this.net = WidgetHelper.renderLine({ left: 0, bottom: 0 }, '50%-1', '30%-1', 'white', 'Net I/O (B)', true);
+        this.net = WidgetRender.line({ left: 0, bottom: 0 }, '50%-1', '30%-1', 'white', 'Net I/O (B)', true);
         box.append(this.net);
-        this.log = WidgetHelper.renderInspectBox(box, 0, 0, '50%-1', '30%-1', ' Inspect ');
-        this.table.on('select', (container: any) => {
-            this.showSelectContainer(container);
-        });
+        this.log = WidgetRender.inspectBox(box, 0, 0, '50%-1', '30%-1', ' Inspect ');
     }
 
     private showSelectContainer(container: any) {

@@ -1,6 +1,6 @@
 import { DockerDashboard } from "../dockerdashboard";
-import { WidgetHelper } from "../common/widgethelper";
-import { Color } from "../common/color";
+import { WidgetRender } from "../common/widgetrender";
+import { ColorText } from "../common/color";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/dockerode";
 import { Log } from "../common/log";
@@ -37,15 +37,15 @@ export class HomeWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.table = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', '')
+        this.table = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', '')
         const data = [
-            [Color.title('Node Info'), ''],
-            [Color.blue('Name'), os.hostname()],
-            [Color.blue('OS'), os.platform() + '-' + os.arch()],
-            [Color.blue('Release'), os.release()],
-            [Color.blue('CPUs'), this.getCPUs()],
-            [Color.blue('Memory'), (os.totalmem() / 1000 / 1000 / 1000).toFixed(1) + ' GB'],
-            [Color.blue('Up Time'), (os.uptime() / 60 / 60).toFixed(0) + ' Hours']
+            [ColorText.title('Node Info'), ''],
+            [ColorText.blue('Name'), os.hostname()],
+            [ColorText.blue('OS'), os.platform() + '-' + os.arch()],
+            [ColorText.blue('Release'), os.release()],
+            [ColorText.blue('CPUs'), this.getCPUs()],
+            [ColorText.blue('Memory'), (os.totalmem() / 1000 / 1000 / 1000).toFixed(1) + ' GB'],
+            [ColorText.blue('Up Time'), (os.uptime() / 60 / 60).toFixed(0) + ' Hours']
         ];
 
         data.push(['', '']);

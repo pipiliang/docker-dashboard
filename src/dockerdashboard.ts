@@ -1,12 +1,10 @@
-import { WidgetMediator } from "./widgets/widgetmediator";
+import { WidgetFactory } from "./widgets/widgetfactory";
 import { Widget } from "./widgets/widget";
-import { WidgetHelper } from "./common/widgethelper";
-
-const blessed = require('blessed');
+import { WidgetRender } from "./common/widgetrender";
 
 export class DockerDashboard {
 	private dashboard: any;
-	private widgetMediator = new WidgetMediator(this);
+	private widgetMediator = new WidgetFactory(this);
 	private activeWidget = this.widgetMediator.getDefault();
 	private box: any;
 
@@ -14,10 +12,14 @@ export class DockerDashboard {
 	}
 
 	public startup() {
-		this.initDashboard();
-		this.registerExitKey();
-		this.renderListBar();
-		this.initBox();
+		this.dashboard = WidgetRender.form('🐳 Docker Dashboard');
+		this.dashboard.key(['q', 'C-c'], () => {
+			return process.exit(0);
+		});
+
+		WidgetRender.menuBar(this.dashboard, this.widgetMediator.getCommands());
+		this.box = WidgetRender.box(this.dashboard);
+
 		this.activeWidget.render();
 		this.dashboard.render();
 	}
@@ -35,55 +37,5 @@ export class DockerDashboard {
 
 	public getDashboard() {
 		return this.dashboard;
-	}
-
-	private initDashboard() {
-		this.dashboard = blessed.screen({
-			smartCSR: true,
-			fullUnicode: true,
-			autoPadding: true,
-			title: '🐳 Docker Dashboard'
-		});
-	}
-
-	private registerExitKey() {
-		this.dashboard.key(['q', 'C-c'], (ch: any, key: any) => {
-			return process.exit(0);
-		});
-	}
-
-	private renderListBar() {
-		var bar = blessed.listbar({
-			parent: this.dashboard,
-			top: 0,
-			left: 0,
-			right: 0,
-			height: 'shrink',
-			mouse: true,
-			keys: true,
-			autoCommandKeys: true,
-			border: 'line',
-			vi: true,
-			style: {
-				bg: 'black',
-				item: {
-					bg: 'yellow',
-					fg: 'black',
-					hover: {
-						bg: 'blue'
-					}
-				},
-				selected: {
-					bg: 'blue'
-				}
-			},
-			commands: this.widgetMediator.getCommands()
-		});
-		bar.focus();
-		this.dashboard.append(bar);
-	}
-
-	private initBox() {
-		this.box = WidgetHelper.renderBox(this.dashboard);
 	}
 }

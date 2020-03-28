@@ -1,6 +1,6 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
-import { WidgetHelper } from "../common/widgethelper";
+import { WidgetRender } from "../common/widgetrender";
 import { Dockerode } from "../common/dockerode";
 
 export class NetworkWidget extends Widget {
@@ -35,7 +35,7 @@ export class NetworkWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.netTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', '');
+        this.netTable = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', '');
         const data = await Dockerode.instance.listNetworks();
         this.netTable.setData(data);
     }

@@ -1,17 +1,17 @@
-export interface Render {
+export interface Element {
 
     /**
-     * hide widget
+     * hide element
      */
     hide(): void;
 
     /**
-     * show widget
+     * show element
      */
     show(): void;
 
     /**
-     * render widget
+     * render element
      */
     render(): void;
 

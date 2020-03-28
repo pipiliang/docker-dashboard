@@ -1,8 +1,8 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Command } from "../api/command";
-import { Render } from "../api/render";
+import { Element } from "../api/element";
 
-export abstract class Widget implements Render, Command {
+export abstract class Widget implements Element, Command {
 
     private dockerdashboard: DockerDashboard;
 

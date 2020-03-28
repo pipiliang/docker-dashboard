@@ -7,7 +7,7 @@ import { ImageWidget } from "./imagewidget";
 import { NetworkWidget } from "./networkwidget";
 import { VolumeWidget } from "./volumewideget";
 
-export class WidgetMediator {
+export class WidgetFactory {
     private widgets: Array<Widget> = new Array<Widget>();
 
     constructor(dockerdashboard: DockerDashboard) {
@@ -20,7 +20,7 @@ export class WidgetMediator {
         this.widgets.push(new HelpWidget(dockerdashboard));
     }
 
-    public getCommands() {
+    public getCommands(): { [name: string]: any } {
         const commands: { [name: string]: any } = {};
         this.widgets.forEach(widget => {
             commands[widget.getCommandName()] = widget.getCommandKey();

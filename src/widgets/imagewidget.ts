@@ -1,6 +1,6 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
-import { WidgetHelper } from "../common/widgethelper";
+import { WidgetRender } from "../common/widgetrender";
 import { Dockerode } from "../common/dockerode";
 
 export class ImageWidget extends Widget {
@@ -35,7 +35,7 @@ export class ImageWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.imageTable = WidgetHelper.renderTable(box, 0, 0, '100%-2', '100%-2', 'Images');
+        this.imageTable = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', 'Images');
         const data = await Dockerode.instance.listImages();
         this.imageTable.setData(data);
     }
