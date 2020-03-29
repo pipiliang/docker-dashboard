@@ -1,7 +1,8 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetRender } from "../common/widgetrender";
-import { Dockerode } from "../common/dockerode";
+import { Dockerode } from "../common/docker/dockerode";
+import { Log } from "../common/log";
 
 export class ImageWidget extends Widget {
     private imageTable: any;
@@ -11,12 +12,12 @@ export class ImageWidget extends Widget {
     }
 
     getCommandName(): string {
-        return 'Images';
+        return "Images";
     }
 
     getCommandKey(): { [key: string]: any } {
         return {
-            keys: ['i'],
+            keys: ["i"],
             callback: () => {
                 if (!this.imageTable) {
                     this.render();
@@ -35,8 +36,12 @@ export class ImageWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.imageTable = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', 'Images');
-        const data = await Dockerode.instance.listImages();
-        this.imageTable.setData(data);
+        try {
+            this.imageTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "Images");
+            const data = await Dockerode.singleton.listImages();
+            this.imageTable.setData(data);
+        } catch (error) {
+            Log.error(error);
+        }
     }
 }

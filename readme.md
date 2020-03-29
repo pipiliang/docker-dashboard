@@ -17,7 +17,6 @@ In the following environment test passed:
 |----|----|----|
 |Ubuntu 16.04 LTS|v1.12.6|v8.10.0|
 
-
 **Other system and versions are not guaranteed.**
 
 ## Usage
@@ -48,7 +47,7 @@ $ docker-dashboard
 $ git clone git@github.com:pipiliang/docker-dashboard
 $ cd docker-dashboard
 $ npm i
-$ npm run compile
+$ npm run build
 $ npm start
 ```
 

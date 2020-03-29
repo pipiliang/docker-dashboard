@@ -21,7 +21,6 @@ export class WidgetRender {
             autoCommandKeys: true,
             border: 'line',
             style: {
-                bg: Color.black,
                 item: { bg: Color.yellow, fg: Color.black, hover: { bg: Color.blue } },
                 selected: { bg: Color.blue }
             },
@@ -134,4 +133,34 @@ export class WidgetRender {
             }
         });
     };
+
+    public static helpBox(parent: any, content : string) {
+        return blessed.box({
+            parent: parent,
+            label: ' Help ',
+            scrollable: true,
+            scrollstep: 1,
+            left: 'center',
+            top: 'center',
+            width: '60%',
+            height: 24,
+            align: 'left',
+            style: {
+                bg: 'black'
+            },
+            border: {
+                type: "line",
+                fg: "cyan"
+            },
+            content: content,
+            keys: true,
+            mouse: true,
+            vi: true,
+            alwaysScroll: true,
+            scrollbar: {
+                ch: ' ',
+                inverse: true
+            }
+        });
+    }
 }

@@ -31,4 +31,12 @@ export abstract class Widget implements Element, Command {
     protected refresh() {
         this.dockerdashboard.getDashboard().render();
     }
+
+    protected showAll(...widgets: any[]) {
+        widgets.forEach(widget => { if (widget) { widget.show(); } });
+    }
+
+    protected hideAll(...widgets: any[]) {
+        widgets.forEach(widget => { if (widget) { widget.hide(); } });
+    }
 }

@@ -1,7 +1,8 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetRender } from "../common/widgetrender";
-import { Dockerode } from "../common/dockerode";
+import { Dockerode } from "../common/docker/dockerode";
+import { Log } from "../common/log";
 
 export class NetworkWidget extends Widget {
     private netTable: any;
@@ -11,12 +12,12 @@ export class NetworkWidget extends Widget {
     }
 
     getCommandName(): string {
-        return 'Network';
+        return "Network";
     }
 
     getCommandKey(): { [key: string]: any } {
         return {
-            keys: ['n'],
+            keys: ["n"],
             callback: () => {
                 if (!this.netTable) {
                     this.render();
@@ -35,8 +36,12 @@ export class NetworkWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.netTable = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', '');
-        const data = await Dockerode.instance.listNetworks();
-        this.netTable.setData(data);
+        try {
+            this.netTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "");
+            const data = await Dockerode.singleton.listNetworks();
+            this.netTable.setData(data);
+        } catch (error) {
+            Log.error(error);
+        }
     }
 }

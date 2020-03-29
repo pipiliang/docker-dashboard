@@ -3,6 +3,7 @@ import { HelpWidget } from "./helpwidget";
 import { DockerDashboard } from "../dockerdashboard";
 import { ContainerWidget } from "./containerwidget";
 import { Widget } from "./widget";
+import { Element } from "../api/element";
 import { ImageWidget } from "./imagewidget";
 import { NetworkWidget } from "./networkwidget";
 import { VolumeWidget } from "./volumewideget";
@@ -28,7 +29,7 @@ export class WidgetFactory {
         return commands;
     }
 
-    public getDefault(): Widget {
+    public getDefault(): Element {
         return this.widgets[0];
     }
 }

@@ -1,7 +1,7 @@
 import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetRender } from "../common/widgetrender";
-import { Dockerode } from "../common/dockerode";
+import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
 
 export class VolumeWidget extends Widget {
@@ -12,12 +12,12 @@ export class VolumeWidget extends Widget {
     }
 
     getCommandName(): string {
-        return 'Volumes';
+        return "Volumes";
     }
 
     getCommandKey(): { [key: string]: any } {
         return {
-            keys: ['v'],
+            keys: ["v"],
             callback: () => {
                 if (!this.volumeTable) {
                     this.render();
@@ -30,13 +30,18 @@ export class VolumeWidget extends Widget {
     public hide() {
         this.volumeTable.hide();
     }
+
     public show() {
         this.volumeTable.show();
     }
 
     protected async renderWidget(box: any) {
-        this.volumeTable = WidgetRender.table(box, 0, 0, '100%-2', '100%-2', '');
-        const data = await Dockerode.instance.listVolumes();
-        this.volumeTable.setData(data);
+        try {
+            this.volumeTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "");
+            const data = await Dockerode.singleton.listVolumes();
+            this.volumeTable.setData(data);
+        } catch (error) {
+            Log.error(error);
+        }
     }
 }
