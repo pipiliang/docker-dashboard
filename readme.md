@@ -43,12 +43,39 @@ $ docker-dashboard
 
 ## Develop
 
-```
+```shell
 $ git clone git@github.com:pipiliang/docker-dashboard
 $ cd docker-dashboard
 $ npm i
 $ npm run build
 $ npm start
+```
+
+## Debug by VSCode
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "node",
+            "request": "launch",
+            "args": [
+                "${workspaceRoot}/src/index.ts"
+            ],
+            "runtimeArgs": [
+                "--nolazy",
+                "-r",
+                "ts-node/register"
+            ],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "console": "integratedTerminal"
+        }
+    ]
+}
 ```
 
 ## Thanks

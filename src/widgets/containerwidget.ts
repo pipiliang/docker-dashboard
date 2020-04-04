@@ -3,7 +3,7 @@ import { WidgetRender } from "../common/widgetrender";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
-import { Usage } from "../common/docker/container";
+import { Usage, StatsStream } from "../common/docker/container";
 
 
 export class ContainerWidget extends Widget {
@@ -14,6 +14,7 @@ export class ContainerWidget extends Widget {
     private net: any;
     private log: any;
     private selectId: string = "";
+    private stream: any;
 
     constructor(dockerdashboard: DockerDashboard) {
         super(dockerdashboard);
@@ -74,15 +75,46 @@ export class ContainerWidget extends Widget {
             return;
         }
         this.selectId = selectId;
+        // clear data
+        this.clearData();
+
+        // show selected container id
         this.text.setContent("{bold}✔ Container Stats (" + selectId + "){bold}");
         this.refresh();
 
-        // start up draw the line charts
-        const container = Dockerode.singleton.getContainer(this.selectId);
-        container.stats((cpuuage: Usage) => {
-            Log.info(cpuuage);
+        const container = Dockerode.singleton.getContainer(selectId);
+        if (!this.isRunning(selectId)) {
+            return;
+        }
+        // start up draw the stats charts
+        await this.showStatsCharts(container);
+    }
+
+    private clearData() {
+        if (this.stream) {
+            this.stream.end();
+        }
+        this.cpu.setData(Usage.EMPTY);
+        this.mem.setData(Usage.EMPTY);
+    }
+
+    private async showStatsCharts(container: any) {
+        this.stream = await container.stat();
+        this.stream.ondata((cpuuage: Usage, memUsage: Usage) => {
+            Log.info(memUsage);
             this.cpu.setData(cpuuage);
+            this.mem.setData(memUsage);
             this.refresh();
         });
+    }
+
+    private isRunning(selectId: string): boolean {
+        if (this.table) {
+            const row = this.table.rows.find((row: Array<string>) => row[0] === selectId);
+            if (row) {
+                return row[5].indexOf("running") >= 0;
+            }
+        }
+        return false;
     }
 }
