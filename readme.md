@@ -2,7 +2,7 @@
 
 :computer::chart_with_upwards_trend:Console based docker dashboard, base on [blessed](https://github.com/chjj/blessed) and [blessed-contrib](https://github.com/yaronn/blessed-contrib).
 
-![](https://raw.githubusercontent.com/pipiliang/docker-dashboard/master/screenshot/containers.PNG)
+![](./screenshot/ubuntu.gif)
 
 ## Install
 
@@ -53,6 +53,7 @@ $ npm start
 
 ## Debug by VSCode
 
+launch.json :
 ```json
 {
     "version": "0.2.0",

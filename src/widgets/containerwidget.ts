@@ -3,7 +3,7 @@ import { WidgetRender } from "../common/widgetrender";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
-import { Usage, StatsStream } from "../common/docker/container";
+import { Usage, StatsStream, EMPTY_NET_DATA } from "../common/docker/container";
 
 
 export class ContainerWidget extends Widget {
@@ -64,7 +64,7 @@ export class ContainerWidget extends Widget {
         box.append(this.cpu);
         this.mem = WidgetRender.line({ top: "40%", right: 0 }, "50%-1", "30%", "magenta", "Memory Usage (MB)");
         box.append(this.mem);
-        this.net = WidgetRender.line({ left: 0, bottom: 0 }, "50%-1", "30%-1", "white", "Net I/O (B)", true);
+        this.net = WidgetRender.line({ left: 0, bottom: 0 }, "50%-1", "30%-1", "white", "Network Usage (KB)", true);
         box.append(this.net);
         this.log = WidgetRender.inspectBox(box, 0, 0, "50%-1", "30%-1", " Inspect ");
     }
@@ -86,6 +86,10 @@ export class ContainerWidget extends Widget {
         if (!this.isRunning(selectId)) {
             return;
         }
+
+        const inspectData = await container.inspect();
+        this.log.setContent(inspectData);
+
         // start up draw the stats charts
         await this.showStatsCharts(container);
     }
@@ -96,14 +100,17 @@ export class ContainerWidget extends Widget {
         }
         this.cpu.setData(Usage.EMPTY);
         this.mem.setData(Usage.EMPTY);
+        this.net.setData(EMPTY_NET_DATA);
+        this.log.setContent("");
     }
 
     private async showStatsCharts(container: any) {
         this.stream = await container.stat();
-        this.stream.ondata((cpuuage: Usage, memUsage: Usage) => {
+        this.stream.ondata((cpuuage: Usage, memUsage: Usage, txData: Usage, rxData: Usage) => {
             Log.info(memUsage);
             this.cpu.setData(cpuuage);
             this.mem.setData(memUsage);
+            this.net.setData([txData, rxData]);
             this.refresh();
         });
     }

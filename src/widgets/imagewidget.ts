@@ -33,6 +33,7 @@ export class ImageWidget extends Widget {
 
     public show() {
         this.imageTable.show();
+        this.imageTable.focus();
     }
 
     protected async renderWidget(box: any) {

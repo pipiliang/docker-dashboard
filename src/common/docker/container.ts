@@ -1,3 +1,4 @@
+import { Color } from "../color";
 import { Log } from "../log";
 
 export abstract class Usage {
@@ -40,6 +41,68 @@ export class CPUUsage extends Usage {
 
 }
 
+export class RXData extends Usage {
+
+    public get title() {
+        return "RX";
+    }
+
+    public get style() {
+        return {
+            line: Color.magenta
+        };
+    }
+
+    public push(stat: any): void {
+        const time = stat.read.substring(11, 19);
+        let preValue = 0;
+        if (this.y.length > 0) {
+            preValue = this.y[this.y.length - 1];
+        }
+
+        var rxData = (stat.networks.eth0.rx_bytes - preValue) / 1024;
+        if (this.y.length >= 30) {
+            this.y.shift();
+            this.x.shift();
+        }
+        this.y.push(Number(rxData.toFixed(0)));
+        this.x.push(time);
+    }
+
+}
+
+export class TXData extends Usage {
+
+    public get title() {
+        return "TX";
+    }
+
+    public get style() {
+        return {
+            line: Color.yellow
+        };
+    }
+
+    public push(stat: any): void {
+        const time = stat.read.substring(11, 19);
+        let preValue = 0;
+        if (this.y.length > 0) {
+            preValue = this.y[this.y.length - 1];
+        }
+
+        var txData = (stat.networks.eth0.tx_bytes - preValue) / 1024;
+        if (this.y.length >= 30) {
+            this.y.shift();
+            this.x.shift();
+        }
+        this.y.push(Number(txData.toFixed(0)));
+        this.x.push(time);
+    }
+
+}
+
+export const EMPTY_NET_DATA = [new RXData(), new TXData()];
+
 /**
  * the usage class of Memory
  */
@@ -59,6 +122,7 @@ export class MemoryUsage extends Usage {
 
 }
 
+
 /**
  * the instance of container.
  */
@@ -77,6 +141,19 @@ export class Container {
         const stream = await this.container.stats();
         return new StatsStream(stream);
     }
+
+    public async inspect() {
+        if (!this.container) {
+            throw new Error("container is null.");
+        }
+        try {
+            const data = await this.container.inspect();
+            return JSON.stringify(data, null, 2);
+        } catch (error) {
+            Log.error(error);
+        }
+        return "";
+    }
 }
 
 /**
@@ -93,11 +170,15 @@ export class StatsStream {
         if (this.stream) {
             const cpuUsage = new CPUUsage();
             const memUsage = new MemoryUsage();
+            const txData = new TXData();
+            const rxData = new RXData();
             this.stream.on('data', (chunk: any) => {
                 const stat = JSON.parse(chunk.toString());
                 cpuUsage.push(stat);
                 memUsage.push(stat);
-                callback(cpuUsage, memUsage);
+                txData.push(stat);
+                rxData.push(stat);
+                callback(cpuUsage, memUsage, txData, rxData);
             });
         }
     }

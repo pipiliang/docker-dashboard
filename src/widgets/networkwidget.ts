@@ -33,6 +33,7 @@ export class NetworkWidget extends Widget {
 
     public show() {
         this.netTable.show();
+        this.netTable.focus();
     }
 
     protected async renderWidget(box: any) {

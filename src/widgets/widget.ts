@@ -22,6 +22,7 @@ export abstract class Widget implements Element, Command {
 
     public async render() {
         await this.renderWidget(this.dockerdashboard.getBox());
+        this.refresh();
     }
 
     protected active() {

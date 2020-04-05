@@ -33,6 +33,7 @@ export class VolumeWidget extends Widget {
 
     public show() {
         this.volumeTable.show();
+        this.volumeTable.focus();
     }
 
     protected async renderWidget(box: any) {
