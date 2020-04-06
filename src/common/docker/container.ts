@@ -134,7 +134,7 @@ export class Container {
         this.container = container;
     }
 
-    public async stat(): Promise<StatsStream> {
+    public async stat() {
         if (!this.container) {
             throw new Error("container is null.");
         }
