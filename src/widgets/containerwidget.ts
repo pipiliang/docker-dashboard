@@ -107,7 +107,6 @@ export class ContainerWidget extends Widget {
     private async showStatsCharts(container: any) {
         this.stream = await container.stat();
         this.stream.ondata((cpuuage: Usage, memUsage: Usage, txData: Usage, rxData: Usage) => {
-            Log.info(memUsage);
             this.cpu.setData(cpuuage);
             this.mem.setData(memUsage);
             this.net.setData([txData, rxData]);

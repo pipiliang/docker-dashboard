@@ -28,7 +28,7 @@ export class CPUUsage extends Usage {
         let system = stat.cpu_stats.system_cpu_usage - stat.precpu_stats.system_cpu_usage;
         let num = stat.cpu_stats.cpu_usage.percpu_usage.length;
 
-        if (system > 0.0 && total > 0.0) {
+        if (system > 0.0) {
             let percent = (total / system) * num * 100;
             if (this.y.length >= 30) {
                 this.y.shift();
