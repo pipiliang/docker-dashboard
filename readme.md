@@ -16,6 +16,7 @@ In the following environment test passed:
 |OS|Docker|Nodejs|
 |----|----|----|
 |Ubuntu 16.04 LTS|v1.12.6|v8.10.0|
+|Fedora 21|v1.12.6|v8.11.1|
 
 **Other system and versions are not guaranteed.**
 

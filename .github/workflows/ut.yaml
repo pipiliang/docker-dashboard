@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: [ubuntu-latest, macOS-latest, windows-latest]
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,4 +24,4 @@ jobs:
         run: npm install
 
       - name: run UT
-        run: npm run test --if-present
+        run: npm test --if-present
