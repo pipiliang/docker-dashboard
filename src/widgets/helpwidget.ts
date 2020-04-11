@@ -33,6 +33,10 @@ export class HelpWidget extends Widget {
         this.helpBox.show();
     }
 
+    protected resize(): void {
+
+    }
+
     renderWidget(box: any) {
         const content = '\n' +
             '   Shortcut\n' +

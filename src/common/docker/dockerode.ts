@@ -1,6 +1,6 @@
 import { ColorText } from "../color";
 import { Log } from "../log";
-import { Container } from "./container";
+import Container from "./container";
 
 const Docker = require('dockerode');
 const moment = require('moment');

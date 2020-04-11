@@ -4,19 +4,20 @@ import { WidgetRender } from "./common/widgetrender";
 
 export class DockerDashboard {
 	private dashboard: any;
-	private widgetFactory = new WidgetFactory(this);
-	private activeElement = this.widgetFactory.getDefault();
+	private widgetFactory: WidgetFactory;
+	private activeElement: Element;
 	private box: any;
 
 	constructor() {
-	}
-
-	public startup() {
-		this.dashboard = WidgetRender.form("🐳 Docker Dashboard");
+		this.dashboard = WidgetRender.screen("🐳 Docker Dashboard");
 		this.dashboard.key(["q"], () => {
 			return process.exit(0);
 		});
+		this.widgetFactory = new WidgetFactory(this);
+		this.activeElement = this.widgetFactory.getDefault();
+	}
 
+	public startup() {
 		WidgetRender.menuBar(this.dashboard, this.widgetFactory.getCommands());
 		this.box = WidgetRender.box(this.dashboard);
 

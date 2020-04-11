@@ -36,6 +36,12 @@ export class NetworkWidget extends Widget {
         this.netTable.focus();
     }
 
+    protected resize(): void {
+        if (this.netTable) {
+            this.netTable.emit('attach');
+        }
+    }
+
     protected async renderWidget(box: any) {
         try {
             this.netTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "");

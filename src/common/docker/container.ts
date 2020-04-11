@@ -2,6 +2,7 @@ import { Color } from "../color";
 import { Log } from "../log";
 
 export abstract class Usage {
+    private readonly MAX_DATA_LENGTH = 20;
     private X = new Array<string>();
     private Y = new Array<number>();
     public static EMPTY = { x: [], y: [] };
@@ -15,6 +16,15 @@ export abstract class Usage {
     }
 
     abstract push(stat: any): void;
+
+    protected shift() {
+        if (this.y.length >= this.MAX_DATA_LENGTH) {
+            this.y.shift();
+        }
+        if (this.x.length >= this.MAX_DATA_LENGTH) {
+            this.x.shift();
+        }
+    }
 }
 
 /**
@@ -30,10 +40,7 @@ export class CPUUsage extends Usage {
 
         if (system > 0.0) {
             let percent = (total / system) * num * 100;
-            if (this.y.length >= 30) {
-                this.y.shift();
-                this.x.shift();
-            }
+            this.shift()
             this.y.push(percent);
             this.x.push(time);
         }
@@ -61,10 +68,7 @@ export class RXData extends Usage {
         }
 
         var rxData = (stat.networks.eth0.rx_bytes - preValue) / 1024;
-        if (this.y.length >= 30) {
-            this.y.shift();
-            this.x.shift();
-        }
+        this.shift()
         this.y.push(Number(rxData.toFixed(0)));
         this.x.push(time);
     }
@@ -91,10 +95,7 @@ export class TXData extends Usage {
         }
 
         var txData = (stat.networks.eth0.tx_bytes - preValue) / 1024;
-        if (this.y.length >= 30) {
-            this.y.shift();
-            this.x.shift();
-        }
+        this.shift()
         this.y.push(Number(txData.toFixed(0)));
         this.x.push(time);
     }
@@ -109,24 +110,18 @@ export const EMPTY_NET_DATA = [new RXData(), new TXData()];
 export class MemoryUsage extends Usage {
 
     public push(stat: any): void {
+        this.shift()
         const time = stat.read.substring(11, 19);
-        const usage = stat.memory_stats.usage / 1024 / 1024;
-
-        if (this.y.length >= 30) {
-            this.y.shift();
-            this.x.shift();
-        }
-        this.y.push(usage);
+        this.y.push(stat.memory_stats.usage / 1024 / 1024);
         this.x.push(time);
     }
 
 }
 
-
 /**
  * the instance of container.
  */
-export class Container {
+export default class Container {
 
     private container: any;
 

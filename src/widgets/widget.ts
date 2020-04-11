@@ -8,6 +8,9 @@ export abstract class Widget implements Element, Command {
 
     constructor(dockerdashboard: DockerDashboard) {
         this.dockerdashboard = dockerdashboard;
+        this.dockerdashboard.getDashboard().on('resize', () => {
+            this.resize();
+        });
     }
 
     public abstract getCommandName(): string;
@@ -19,6 +22,8 @@ export abstract class Widget implements Element, Command {
     public abstract show(): any;
 
     protected abstract renderWidget(box: any): void;
+
+    protected abstract resize() : void;
 
     public async render() {
         await this.renderWidget(this.dockerdashboard.getBox());
@@ -40,4 +45,5 @@ export abstract class Widget implements Element, Command {
     protected hideAll(...widgets: any[]) {
         widgets.forEach(widget => { if (widget) { widget.hide(); } });
     }
+
 }

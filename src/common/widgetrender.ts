@@ -5,7 +5,7 @@ const contrib = require('blessed-contrib');
 
 export class WidgetRender {
 
-    public static form(title: string) {
+    public static screen(title: string) {
         return blessed.screen({ smartCSR: true, fullUnicode: true, autoPadding: true, title: title });
     }
 

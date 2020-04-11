@@ -9,5 +9,5 @@ program
     .version(pkg.version)
     .parse(process.argv);
 
-const dockerDashboader = new DockerDashboard();
-dockerDashboader.startup();
+const app = new DockerDashboard();
+app.startup();

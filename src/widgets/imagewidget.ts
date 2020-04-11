@@ -36,6 +36,12 @@ export class ImageWidget extends Widget {
         this.imageTable.focus();
     }
 
+    protected resize(): void {
+        if (this.imageTable) {
+            this.imageTable.emit('attach');
+        }
+    }
+
     protected async renderWidget(box: any) {
         try {
             this.imageTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "Images");

@@ -3,7 +3,7 @@ import { WidgetRender } from "../common/widgetrender";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
-import { Usage, StatsStream, EMPTY_NET_DATA } from "../common/docker/container";
+import { Usage, EMPTY_NET_DATA } from "../common/docker/container";
 
 
 export class ContainerWidget extends Widget {
@@ -44,6 +44,17 @@ export class ContainerWidget extends Widget {
     public show() {
         this.showAll(this.table, this.text, this.mem, this.cpu, this.net, this.log);
         this.table.focus();
+    }
+
+    protected resize(): void {
+        if (this.table) {
+            this.table.emit('attach');
+            this.text.emit('attach'); 
+            this.mem.emit('attach'); 
+            this.cpu.emit('attach'); 
+            this.net.emit('attach'); 
+            this.log.emit('attach');
+        }
     }
 
     protected async renderWidget(box: any) {

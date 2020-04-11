@@ -36,6 +36,12 @@ export class VolumeWidget extends Widget {
         this.volumeTable.focus();
     }
 
+    protected resize(): void {
+        if (this.volumeTable) {
+            this.volumeTable.emit('attach');
+        }
+    }
+
     protected async renderWidget(box: any) {
         try {
             this.volumeTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "");
