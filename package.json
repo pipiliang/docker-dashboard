@@ -11,15 +11,17 @@
     "blessed-contrib": "^4.7.5",
     "commander": "^5.0.0",
     "dockerode": "^2.4.3",
+    "inversify": "^5.0.1",
     "log4js": "^6.1.2",
     "moment": "^2.18.1",
-    "strip-ansi": "^3.0.0",
-    "os": "0.1.1"
+    "os": "0.1.1",
+    "reflect-metadata": "^0.1.13",
+    "strip-ansi": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^13.9.2",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
+    "@types/node": "^13.9.2",
     "chai": "^4.2.0",
     "codecov": ">=3.6.5",
     "eslint": "^6.8.0",

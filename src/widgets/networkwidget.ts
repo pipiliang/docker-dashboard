@@ -27,19 +27,8 @@ export class NetworkWidget extends Widget {
         };
     }
 
-    public hide() {
-        this.netTable.hide();
-    }
-
-    public show() {
-        this.netTable.show();
-        this.netTable.focus();
-    }
-
-    protected resize(): void {
-        if (this.netTable) {
-            this.netTable.emit('attach');
-        }
+    public getAllElements(): Array<any> {
+        return [this.netTable];
     }
 
     protected async renderWidget(box: any) {

@@ -27,19 +27,8 @@ export class ImageWidget extends Widget {
         };
     }
 
-    public hide() {
-        this.imageTable.hide();
-    }
-
-    public show() {
-        this.imageTable.show();
-        this.imageTable.focus();
-    }
-
-    protected resize(): void {
-        if (this.imageTable) {
-            this.imageTable.emit('attach');
-        }
+    public getAllElements(): Array<any> {
+        return [this.imageTable];
     }
 
     protected async renderWidget(box: any) {

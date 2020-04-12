@@ -29,18 +29,8 @@ export class HomeWidget extends Widget {
         };
     }
 
-    public hide() {
-        this.table.hide();
-    }
-
-    public show() {
-        this.table.show();
-    }
-
-    protected resize(): void {
-        if (this.table) {
-            this.table.emit('attach');
-        }
+    public getAllElements(): Array<any> {
+        return [this.table];
     }
 
     protected async renderWidget(box: any) {

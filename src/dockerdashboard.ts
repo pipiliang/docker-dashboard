@@ -1,8 +1,11 @@
 import { WidgetFactory } from "./widgets/widgetfactory";
 import { Element } from "./api/element";
 import { WidgetRender } from "./common/widgetrender";
+import { Startable } from "./api/dashboard";
+import { injectable } from "inversify";
 
-export class DockerDashboard {
+@injectable()
+export class DockerDashboard implements Startable {
 	private dashboard: any;
 	private widgetFactory: WidgetFactory;
 	private activeElement: Element;
@@ -20,7 +23,6 @@ export class DockerDashboard {
 	public startup() {
 		WidgetRender.menuBar(this.dashboard, this.widgetFactory.getCommands());
 		this.box = WidgetRender.box(this.dashboard);
-
 		this.activeElement.render();
 		this.dashboard.render();
 	}

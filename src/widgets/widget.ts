@@ -17,13 +17,33 @@ export abstract class Widget implements Element, Command {
 
     public abstract getCommandKey(): { [key: string]: any };
 
-    public abstract hide(): any;
-
-    public abstract show(): any;
+    protected abstract getAllElements(): Array<any>;
 
     protected abstract renderWidget(box: any): void;
 
-    protected abstract resize() : void;
+    /**
+     * hide all elements of widget when click other widget
+     */
+    public hide(): void {
+        this.getAllElements().forEach(element => { if (element) { element.hide(); } });
+    }
+
+    /**
+     * show all elements of widget when click
+     */
+    public show(): void {
+        this.getAllElements().forEach(element => { if (element) { element.show(); } });
+        if (this.getAllElements().length > 0) {
+            this.getAllElements()[0].focus();
+        }
+    }
+
+    /**
+     * resize all elements when screen resize
+     */
+    protected resize(): void {
+        this.getAllElements().forEach(element => { if (element) { element.emit('attach'); } });
+    }
 
     public async render() {
         await this.renderWidget(this.dockerdashboard.getBox());
@@ -36,14 +56,6 @@ export abstract class Widget implements Element, Command {
 
     protected refresh() {
         this.dockerdashboard.getDashboard().render();
-    }
-
-    protected showAll(...widgets: any[]) {
-        widgets.forEach(widget => { if (widget) { widget.show(); } });
-    }
-
-    protected hideAll(...widgets: any[]) {
-        widgets.forEach(widget => { if (widget) { widget.hide(); } });
     }
 
 }

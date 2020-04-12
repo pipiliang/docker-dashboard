@@ -25,16 +25,8 @@ export class HelpWidget extends Widget {
         };
     }
 
-    public hide() {
-        this.helpBox.hide();
-    }
-
-    public show() {
-        this.helpBox.show();
-    }
-
-    protected resize(): void {
-
+    public getAllElements(): Array<any> {
+        return [this.helpBox];
     }
 
     renderWidget(box: any) {

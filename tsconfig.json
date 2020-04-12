@@ -9,6 +9,8 @@
     "removeComments": true,
     "strict": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true
   },
   "exclude": [

@@ -27,19 +27,8 @@ export class VolumeWidget extends Widget {
         };
     }
 
-    public hide() {
-        this.volumeTable.hide();
-    }
-
-    public show() {
-        this.volumeTable.show();
-        this.volumeTable.focus();
-    }
-
-    protected resize(): void {
-        if (this.volumeTable) {
-            this.volumeTable.emit('attach');
-        }
+    public getAllElements(): Array<any> {
+        return [this.volumeTable];
     }
 
     protected async renderWidget(box: any) {
