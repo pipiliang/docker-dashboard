@@ -1,15 +1,12 @@
-import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetRender } from "../common/widgetrender";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
+import { injectable } from "inversify";
 
+@injectable()
 export class ImageWidget extends Widget {
     private imageTable: any;
-
-    constructor(dockerdashboard: DockerDashboard) {
-        super(dockerdashboard);
-    }
 
     getCommandName(): string {
         return "Images";

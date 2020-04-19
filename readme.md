@@ -16,7 +16,7 @@ In the following environment test passed:
 |OS|Docker|Nodejs|
 |----|----|----|
 |Ubuntu 16.04 LTS|v1.12.6|v8.10.0|
-|Fedora 21|v1.12.6|v8.11.1|
+|Fedora 25|v1.12.6|v8.11.1|
 
 **Other system and versions are not guaranteed.**
 
@@ -42,15 +42,18 @@ $ docker-dashboard
 
 > Support operation with mouse.
 
-## Develop
+## Development
 
+run with resource:
 ```shell
 $ git clone git@github.com:pipiliang/docker-dashboard
 $ cd docker-dashboard
 $ npm i
 $ npm run build
+$ npm test
 $ npm start
 ```
+
 
 ## Debug by VSCode
 

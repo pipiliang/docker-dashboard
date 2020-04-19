@@ -1,15 +1,12 @@
-import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetRender } from "../common/widgetrender";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
+import { injectable } from "inversify";
 
+@injectable()
 export class VolumeWidget extends Widget {
     private volumeTable: any;
-
-    constructor(dockerdashboard: DockerDashboard) {
-        super(dockerdashboard);
-    }
 
     getCommandName(): string {
         return "Volumes";

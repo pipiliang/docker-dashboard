@@ -28,5 +28,6 @@ export enum Color {
     blue = 'blue',
     magenta = 'magenta',
     white = 'white',
-    cyan = 'cyan'
+    cyan = 'cyan',
+    green = 'green'
 }

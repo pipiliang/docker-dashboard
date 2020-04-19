@@ -1,18 +1,16 @@
-import { DockerDashboard } from "../dockerdashboard";
 import { WidgetRender } from "../common/widgetrender";
 import { ColorText } from "../common/color";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
+import { injectable } from "inversify";
 
 const os = require('os');
 
+@injectable()
 export class HomeWidget extends Widget {
     private table: any;
-    constructor(dockerdashboard: DockerDashboard) {
-        super(dockerdashboard);
-    }
-
+ 
     public getCommandName(): string {
         return "Dashboard";
     }

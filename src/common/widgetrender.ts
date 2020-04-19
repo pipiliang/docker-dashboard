@@ -93,12 +93,12 @@ export class WidgetRender {
             height: height,
             style: {
                 line: color,
-                text: 'green',
+                text: Color.green,
                 baseline: ['#696969']
             },
             border: {
                 type: "line",
-                fg: "cyan"
+                fg: Color.cyan
             },
             showNthLabel: 1,
             label: ' ' + label + ' ',
@@ -146,11 +146,11 @@ export class WidgetRender {
             height: 24,
             align: 'left',
             style: {
-                bg: 'black'
+                bg: Color.black
             },
             border: {
                 type: "line",
-                fg: "cyan"
+                fg: Color.cyan
             },
             content: content,
             keys: true,

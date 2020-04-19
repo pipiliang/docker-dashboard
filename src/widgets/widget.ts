@@ -1,16 +1,16 @@
-import { DockerDashboard } from "../dockerdashboard";
 import { Command } from "../api/command";
 import { Element } from "../api/element";
+import { injectable, inject } from "inversify";
+import { Layout } from "../api/dashboard";
 
+@injectable()
 export abstract class Widget implements Element, Command {
 
-    private dockerdashboard: DockerDashboard;
+    private layout: Layout;
 
-    constructor(dockerdashboard: DockerDashboard) {
-        this.dockerdashboard = dockerdashboard;
-        this.dockerdashboard.getDashboard().on('resize', () => {
-            this.resize();
-        });
+    constructor(@inject("Layout") layout: Layout) {
+        this.layout = layout;
+        this.layout.onResize(() => { this.resize() });
     }
 
     public abstract getCommandName(): string;
@@ -46,16 +46,16 @@ export abstract class Widget implements Element, Command {
     }
 
     public async render() {
-        await this.renderWidget(this.dockerdashboard.getBox());
+        await this.renderWidget(this.layout.getBox());
         this.refresh();
     }
 
     protected active() {
-        this.dockerdashboard.active(this);
+        this.layout.active(this);
     }
 
     protected refresh() {
-        this.dockerdashboard.getDashboard().render();
+        this.layout.render();
     }
 
 }

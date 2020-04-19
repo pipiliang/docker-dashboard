@@ -1,44 +1,71 @@
 import { WidgetFactory } from "./widgets/widgetfactory";
 import { Element } from "./api/element";
 import { WidgetRender } from "./common/widgetrender";
-import { Startable } from "./api/dashboard";
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
+import { Layout, Setup } from "./api/dashboard";
 
 @injectable()
-export class DockerDashboard implements Startable {
-	private dashboard: any;
+export class DockerDashboard {
 	private widgetFactory: WidgetFactory;
-	private activeElement: Element;
-	private box: any;
+	private layout: Setup;
 
-	constructor() {
-		this.dashboard = WidgetRender.screen("🐳 Docker Dashboard");
-		this.dashboard.key(["q"], () => {
-			return process.exit(0);
-		});
-		this.widgetFactory = new WidgetFactory(this);
-		this.activeElement = this.widgetFactory.getDefault();
+	constructor(@inject("Setup") layout: Setup, @inject("WidgetFactory") widgetFactory: WidgetFactory) {
+		this.layout = layout;
+		this.widgetFactory = widgetFactory;
 	}
 
 	public startup() {
-		WidgetRender.menuBar(this.dashboard, this.widgetFactory.getCommands());
-		this.box = WidgetRender.box(this.dashboard);
+		this.layout.setMenu(this.widgetFactory.getCommands());
+		this.layout.asDefault(this.widgetFactory.getDefault());
+		this.layout.render();
+	}
+}
+
+@injectable()
+export class BoardLayout implements Layout, Setup {
+	private screen: any;
+	private box: any;
+	private activeElement: Element;
+	constructor() {
+		this.screen = WidgetRender.screen("🐳 Docker Dashboard");
+		this.screen.key(["q"], () => {
+			return process.exit(0);
+		});
+		this.box = WidgetRender.box(this.screen);
+	}
+
+	setMenu(commands: { [key: string]: any }): void {
+		WidgetRender.menuBar(this.screen, commands);
+	}
+
+	asDefault(element: Element) {
+		this.activeElement = element;
 		this.activeElement.render();
-		this.dashboard.render();
 	}
 
-	public getBox() {
-		return this.box;
-	}
-
-	public active(element: Element) {
+	active(element: Element) {
 		this.activeElement.hide();
 		this.activeElement = element;
 		this.activeElement.show();
-		this.dashboard.render();
+		this.screen.render();
 	}
 
-	public getDashboard() {
-		return this.dashboard;
+	getBox(): any {
+		return this.box;
 	}
+
+	getScreen(): any {
+		return this.screen;
+	}
+
+	render() {
+		this.screen.render();
+	}
+
+	onResize(callback: Function) {
+		this.screen.on('resize', () => {
+			callback();
+		});
+	}
+
 }

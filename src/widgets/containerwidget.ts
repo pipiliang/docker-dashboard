@@ -1,10 +1,11 @@
-import { DockerDashboard } from "../dockerdashboard";
 import { WidgetRender } from "../common/widgetrender";
 import { Widget } from "./widget";
 import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
 import { Usage, EMPTY_NET_DATA } from "../common/docker/container";
+import { injectable } from "inversify";
 
+@injectable()
 export class ContainerWidget extends Widget {
     private table: any;
     private text: any;
@@ -14,10 +15,6 @@ export class ContainerWidget extends Widget {
     private log: any;
     private selectId: string = "";
     private stream: any;
-
-    constructor(dockerdashboard: DockerDashboard) {
-        super(dockerdashboard);
-    }
 
     getCommandName(): string {
         return "Containers";

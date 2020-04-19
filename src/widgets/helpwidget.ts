@@ -1,13 +1,10 @@
-import { DockerDashboard } from "../dockerdashboard";
 import { Widget } from "./widget";
 import { WidgetRender } from "../common/widgetrender";
+import { injectable } from "inversify";
 
+@injectable()
 export class HelpWidget extends Widget {
     private helpBox: any;
-
-    constructor(dockerdashboard: DockerDashboard) {
-        super(dockerdashboard);
-    }
 
     getCommandName(): string {
         return "Help";
