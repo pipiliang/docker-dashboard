@@ -45,8 +45,11 @@ export abstract class Widget implements Element, Command {
         this.getAllElements().forEach(element => { if (element) { element.emit('attach'); } });
     }
 
+    /**
+     * render all element of widget
+     */
     public async render() {
-        await this.renderWidget(this.layout.getBox());
+        this.renderWidget(this.layout.getBox());
         this.refresh();
     }
 

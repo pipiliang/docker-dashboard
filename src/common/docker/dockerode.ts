@@ -1,9 +1,10 @@
 import { ColorText } from "../color";
 import { Log } from "../log";
+import moment from "moment";
 import Container from "./container";
+import Image from "./image";
 
 const Docker = require('dockerode');
-const moment = require('moment');
 
 export class Dockerode {
 
@@ -27,24 +28,33 @@ export class Dockerode {
         return new Container(this.docker.getContainer(selectId));
     }
 
-    public async version(): Promise<any> {
-        const data = [[ColorText.title('Docker Version'), '']];
+    public getImage(selectId: string): Image {
+        return new Image(this.docker.getImage(selectId));
+    }
+
+    public async version(): Promise<string[][]> {
+        // const data = [[ColorText.title('Docker Version'), '']];
+        const data = [];
         try {
             const version = await this.docker.version();
             if (!version) {
                 return data;
             }
-            data.push([ColorText.blue('Docker version'), version.Version]);
-            data.push([ColorText.blue('Docker api version'), version.ApiVersion]);
-            data.push([ColorText.blue('Go version'), version.GoVersion]);
-            data.push([ColorText.blue('Build'), version.GitCommit]);
-            data.push([ColorText.blue('Build time'), version.BuildTime]);
-            data.push([ColorText.blue('Experimental'), version.Experimental ? version.Experimental : "--"]);
+            data.push(['Docker version', version.Version]);
+            data.push(['Docker api version', version.ApiVersion]);
+            data.push(['Go version', version.GoVersion]);
+            data.push(['Build', version.GitCommit]);
+            data.push(['Build time', this.toLocalTime(version.BuildTime)]);
         } catch (error) {
             Log.error(error);
-            data.push(["Error", error.errno]);
+            data.push(['Error', error.errno]);
         }
         return data;
+    }
+
+    private toLocalTime(timeString: string) {
+        const time = moment(timeString, "YYYY-MM-DD hh:mm:ss");
+        return time.add(moment().utcOffset() / 60, "hours").format("YYYY-MM-DD hh:mm:ss");
     }
 
     public async information(): Promise<any> {

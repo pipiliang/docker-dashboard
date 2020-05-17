@@ -4,6 +4,7 @@ import { Dockerode } from "../common/docker/dockerode";
 import { Log } from "../common/log";
 import { Usage, EMPTY_NET_DATA } from "../common/docker/container";
 import { injectable } from "inversify";
+import { Color } from "../common/color";
 
 @injectable()
 export class ContainerWidget extends Widget {
@@ -39,7 +40,8 @@ export class ContainerWidget extends Widget {
 
     protected async renderWidget(box: any) {
         try {
-            this.table = WidgetRender.table(box, 0, 0, "100%-2", "40%-2", "Containers");
+            const location = { top: 0, left: 0, width: "100%-2", height: "40%-2" };
+            this.table = WidgetRender.table(box, location, "Containers");
             const data = await Dockerode.singleton.listContainers();
             this.table.setData(data);
             this.table.on("select", (container: any) => {
@@ -49,15 +51,15 @@ export class ContainerWidget extends Widget {
             Log.error(error);
         }
 
-        this.text = WidgetRender.text(box, "40%-2", 0, "100%-2", 2, "{bold}✔  Container Stats{bold}");
+        this.text = WidgetRender.text(box, { top: "40%-2", left: 0, width: "100%-2", height: 2 }, "{bold}✔  Container Stats{bold}");
 
-        this.cpu = WidgetRender.line({ top: "40%", left: 0 }, "50%-1", "30%", "red", "CPU Usage (%)");
+        this.cpu = WidgetRender.line({ top: "40%", left: 0, width: "50%-1", height: "30%" }, Color.red, "CPU Usage (%)");
         box.append(this.cpu);
-        this.mem = WidgetRender.line({ top: "40%", right: 0 }, "50%-1", "30%", "magenta", "Memory Usage (MB)");
+        this.mem = WidgetRender.line({ top: "40%", right: 0, width: "50%-1", height: "30%" }, Color.magenta, "Memory Usage (MB)");
         box.append(this.mem);
-        this.net = WidgetRender.line({ left: 0, bottom: 0 }, "50%-1", "30%-1", "white", "Network Usage (KB)", true);
+        this.net = WidgetRender.line({ left: 0, bottom: 0, width: "50%-1", height: "30%-1" }, Color.white, "Network Usage (KB)", true);
         box.append(this.net);
-        this.log = WidgetRender.inspectBox(box, 0, 0, "50%-1", "30%-1", " Inspect ");
+        this.log = WidgetRender.inspectBox(box, { right: 0, bottom: 0, width: "50%-1", height: "30%-1" }, " Inspect ");
     }
 
     private async showSelectContainer(containerItem: any) {

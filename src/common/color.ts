@@ -17,7 +17,11 @@ export class ColorText {
     }
 
     public static title(str: string) {
-        return '{bold}{white-fg}' + str + '{/white-fg}{/bold}';
+        return '{white-bg} {/white-bg} ' + '{bold}{white-fg}' + str + '{/white-fg}{/bold}';
+    }
+
+    public static bold(str: string) {
+        return '{bold}' + str + '{/bold}';
     }
 }
 
@@ -29,5 +33,7 @@ export enum Color {
     magenta = 'magenta',
     white = 'white',
     cyan = 'cyan',
-    green = 'green'
+    green = 'green',
+    red = 'red',
+    gray = '#696969'
 }

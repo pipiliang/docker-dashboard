@@ -30,7 +30,8 @@ export class NetworkWidget extends Widget {
 
     protected async renderWidget(box: any) {
         try {
-            this.netTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "");
+            const location = { top: 0, left: 0, width: "100%-2", height: "100%-2" };
+            this.netTable = WidgetRender.table(box, location);
             const data = await Dockerode.singleton.listNetworks();
             this.netTable.setData(data);
         } catch (error) {

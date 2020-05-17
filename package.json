@@ -15,6 +15,7 @@
     "log4js": "^6.1.2",
     "moment": "^2.18.1",
     "os": "0.1.1",
+    "os-utils": "0.0.14",
     "reflect-metadata": "^0.1.13",
     "strip-ansi": "^3.0.0"
   },

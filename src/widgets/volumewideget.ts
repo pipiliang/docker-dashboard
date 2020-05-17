@@ -30,7 +30,8 @@ export class VolumeWidget extends Widget {
 
     protected async renderWidget(box: any) {
         try {
-            this.volumeTable = WidgetRender.table(box, 0, 0, "100%-2", "100%-2", "");
+            const location = { top: 0, left: 0, width: "100%-2", height: "100%-2" };
+            this.volumeTable = WidgetRender.table(box, location);
             const data = await Dockerode.singleton.listVolumes();
             this.volumeTable.setData(data);
         } catch (error) {
