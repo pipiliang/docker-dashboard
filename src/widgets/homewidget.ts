@@ -10,8 +10,6 @@ import osutils from 'os-utils';
 
 @injectable()
 export class HomeWidget extends Widget {
-    private table: any;
-    private donut: any;
     private allElements: Array<any> = [];
 
     public getCommandName(): string {
@@ -22,9 +20,6 @@ export class HomeWidget extends Widget {
         return {
             keys: ["d"],
             callback: () => {
-                if (!this.table) {
-                    this.render();
-                }
                 this.active();
             }
         };
@@ -35,32 +30,24 @@ export class HomeWidget extends Widget {
     }
 
     protected async renderWidget(box: any) {
-        this.allElements.push(WidgetRender.text(box, { top: 0, left: 1, width: "100%-5", height: 2 }, ColorText.title('System Infomation')));
+        // System Infomation
+        this.allElements.push(WidgetRender.text(box, { top: 1, left: 1, width: "100%-5", height: 2 }, ColorText.title('System Infomation')));
         this.showCPUUasge(box);
         this.showSystemInfomation(box);
-        this.allElements.push(WidgetRender.text(box, { top: 12, left: 1, width: "100%-5", height: 2 }, ColorText.title('Docker Infomation')));
+        // Docker Infomation
+        this.allElements.push(WidgetRender.text(box, { top: 10, left: 1, width: "100%-5", height: 2 }, ColorText.title('Docker Infomation')));
         this.showDockerInfomation(box);
-        // try {
-        //     const versionData = await Dockerode.singleton.version();
-        //     versionData.forEach((vData: []) => data.push(vData));
-
-        //     const dockerInfo = await Dockerode.singleton.information();
-        //     dockerInfo.forEach((info: []) => data.push(info));
-
-        //     const images = await Dockerode.singleton.totalImages();
-        //     images.forEach((image: []) => data.push(image));
-        // } catch (error) {
-        //     Log.info(error);
-        // }
-
-        // this.table.setData(data);
+        // Statistics
+        this.allElements.push(WidgetRender.text(box, { top: 20, left: 1, width: "100%-4", height: 2 }, ColorText.title('Statistics')));
+        this.showStatistics(box);
+  
         this.refresh();
     };
 
     private async showCPUUasge(box: any) {
-        this.donut = WidgetRender.donut({ top: 2, left: 53, width: 50, height: 10 });
-        box.append(this.donut);
-        this.donut.setData([
+        const donut = WidgetRender.donut({ top: 2, left: 53, width: 50, height: 10 });
+        box.append(donut);
+        donut.setData([
             { percent: 0, label: 'CPU Usage', color: Color.green },
             { percent: 0, label: 'MEM Usage', color: Color.cyan }
         ]);
@@ -70,14 +57,14 @@ export class HomeWidget extends Widget {
             osutils.cpuUsage((v: number) => {
                 const cpuusage = (v * 100.0).toFixed(2);
                 const memusage = ((os.totalmem() - os.freemem()) / os.totalmem() * 100).toFixed(2);
-                this.donut.setData([
+                donut.setData([
                     { percent: cpuusage, label: 'CPU Usage', color: Color.green },
                     { percent: memusage, label: 'MEM Usage', color: Color.cyan }
                 ]);
                 this.refresh();
             });
         }, 1000);
-        this.allElements.push(this.donut);
+        this.allElements.push(donut);
     }
 
     private async showSystemInfomation(box: any) {
@@ -86,7 +73,7 @@ export class HomeWidget extends Widget {
             ["OS", os.platform() + "-" + os.arch()],
             ["Release", os.release()],
             ["CPUs", this.getCPUs()],
-            ["Memory", (os.totalmem() / 1000 / 1000 / 1000).toFixed(1) + " GB"],
+            ["Memory", (os.totalmem() / 1000 / 1000 / 1000).toFixed(2) + " GB"],
             ["Up Time", (os.uptime() / 60 / 60).toFixed(0) + " Hours"]
         ];
         const location = { top: 3, left: 3, width: 50, height: 6 };
@@ -95,27 +82,31 @@ export class HomeWidget extends Widget {
 
     private async showDockerInfomation(box: any) {
         try {
-            const data = await Dockerode.singleton.version();
-            const location = { top: 14, left: 3, width: 50, height: 6 };
+            const data = await Dockerode.singleton.getDockerVersion();
+            const location = { top: 12, left: 3, width: 50, height: 6 };
             this.allElements.push(WidgetRender.drawInfomation(box, location, data, 22));
             this.refresh();
         } catch (error) {
             Log.info(error);
         }
-        // const data = [
-        //     ['Name', os.hostname()],
-        //     ["OS", os.platform() + "-" + os.arch()],
-        //     ["Release", os.release()],
-        //     ["CPUs", this.getCPUs()],
-        //     ["Memory", (os.totalmem() / 1000 / 1000 / 1000).toFixed(1) + " GB"],
-        //     ["Up Time", (os.uptime() / 60 / 60).toFixed(0) + " Hours"]
-        // ];
-        // const location = { top: 3, right: 0, width: "100%-50", height: 6 };
-        // this.allElements.push(WidgetRender.drawInfomation(box, location, data));
     }
 
     private getCPUs(): string {
         const cups = os.cpus();
         return (cups && cups.length) ? cups.length.toString() : "0";
+    }
+
+    private async showStatistics(box: any) {
+        try {
+            const data = await Dockerode.singleton.getStatistics();
+            const location = { top: 22, left: 1, width: '100%-4', height: 4 };
+            const statisticsTable = WidgetRender.table(box, location);
+            statisticsTable.setData(data);
+
+            this.allElements.push(statisticsTable);
+            this.refresh();
+        } catch (error) {
+            Log.info(error);
+        }
     }
 }

@@ -40,7 +40,8 @@ export class WidgetRender {
      * @param location : LocationOptions
      * @param label: table name
      */
-    public static table(parent: any, location: LocationOptions, label: string = '') {
+    public static table(parent: any, location: LocationOptions, label: string = '', selectedColor?: string) {
+        const cell = selectedColor ? { fg: Color.magenta, selected: { bg: selectedColor } } : { fg: Color.magenta };
         return blessed.listtable({
             parent: parent,
             top: location.top, left: location.left, width: location.width, height: location.height,
@@ -48,9 +49,10 @@ export class WidgetRender {
             tags: true, keys: true, mouse: true,
             style: {
                 fg: Color.white,
-                header: { fg: Color.blue, bold: true },
+                header: { fg: Color.blue, bold: true, bg: Color.black },
                 border: { fg: Color.black },
-                cell: { fg: Color.magenta, selected: { bg: Color.blue } }
+                // cell: { fg: Color.magenta, selected: { bg: selectedColor ? selectedColor : Color.blue } }
+                cell: cell
             },
             label: label
         });

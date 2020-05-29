@@ -32,8 +32,10 @@ export class Dockerode {
         return new Image(this.docker.getImage(selectId));
     }
 
-    public async version(): Promise<string[][]> {
-        // const data = [[ColorText.title('Docker Version'), '']];
+    /**
+     * get docker version.
+     */
+    public async getDockerVersion(): Promise<string[][]> {
         const data = [];
         try {
             const version = await this.docker.version();
@@ -57,49 +59,104 @@ export class Dockerode {
         return time.add(moment().utcOffset() / 60, "hours").format("YYYY-MM-DD hh:mm:ss");
     }
 
-    public async information(): Promise<any> {
-        const data: any[] = [['', ''], [ColorText.title('Swarm Info'), '']];
+    public async getStatistics() : Promise<string[][]> {
+        const data = [['Containers', 'Images' , 'Networks', 'Volumes']];
         try {
             const info = await this.docker.info();
             if (!info) {
                 return data;
             }
-            const isSwarm = this.isSwarm(info);
-            if (isSwarm) {
-                data.push([ColorText.blue('(This node is part of a Swarm cluster)'), '']);
-            }
-            data.push([ColorText.blue('Node role'), isSwarm ? this.role(info.Swarm) : '-']);
-            data.push([ColorText.blue('Node id'), isSwarm ? info.Swarm.NodeID : '-']);
-            data.push([ColorText.blue('Nodes in the cluster'), isSwarm ? info.Swarm.Nodes.toString() : '-']);
-            data.push([ColorText.blue('Managers in the cluster'), isSwarm ? info.Swarm.Managers.toString() : '-']);
+            const running = 'Running : ' + ColorText.cyan(info.ContainersRunning.toString());
+            const stopped = 'Stopped : ' + ColorText.red(info.ContainersStopped.toString());
+            const containers = info.Containers.toString() + ' ( ' + running + ' , ' + stopped + ' )';
+            const images = await this.totalImages();
+            const nets = await this.statistic(() => this.docker.listNetworks());
+            const volumes = await this.statistic(async () => {
+                const result = await this.docker.listVolumes();
+                if (result) {
+                    return result.Volumes;
+                }
+            });
 
-            data.push(['', '']);
-            data.push([ColorText.title('Containers'), '']);
-            data.push([ColorText.blue('Total'), info.Containers.toString()]);
-            data.push([ColorText.blue('Running'), ColorText.cyan(info.ContainersRunning.toString())]);
-            data.push([ColorText.blue('Stopped'), ColorText.red(info.ContainersStopped.toString())]);
-            data.push([ColorText.blue('Paused'), ColorText.yellow(info.ContainersPaused.toString())]);
+            data.push([containers, images, nets, volumes])
         } catch (error) {
             Log.error(error);
-            data.push(["Error", error.errno]);
+            data.push([error.errno]);
         }
         return data;
     }
 
-    private isSwarm(info: any) {
-        return info.Swarm && info.Swarm.LocalNodeState === 'active';
+    private async statistic(callback: Function) : Promise<string> {
+        try {
+            const result = await callback();
+            if (!result) {
+                return '-';
+            }
+            return result.length ? result.length.toString() : '0';
+        } catch (error) {
+            Log.error(error);
+            return error.errno;
+        }
     }
 
-    private role(swarm: any) {
-        var localId = swarm.NodeID;
-        var isLeader = false;
-        swarm.RemoteManagers.forEach((rm: any) => {
-            if (rm.NodeID == localId) {
-                isLeader = true;
+    // total of images
+    private async totalImages(): Promise<string> {
+        try {
+            const images = await this.docker.listImages();
+            if (!images) {
+                return '-';
             }
-        });
-        return isLeader ? 'Leader' : 'Follower';
+            const length = images.length ? images.length.toString() : '0';
+            return length + ' ( Size : ' + this.sizeOf(images) + ' GB )';
+        } catch (error) {
+            Log.error(error);
+            return error.errno;
+        }
     }
+
+    // public async information(): Promise<any> {
+    //     const data: any[] = [['', ''], [ColorText.title('Swarm Info'), '']];
+    //     try {
+    //         const info = await this.docker.info();
+    //         if (!info) {
+    //             return data;
+    //         }
+    //         const isSwarm = this.isSwarm(info);
+    //         if (isSwarm) {
+    //             data.push([ColorText.blue('(This node is part of a Swarm cluster)'), '']);
+    //         }
+    //         data.push([ColorText.blue('Node role'), isSwarm ? this.role(info.Swarm) : '-']);
+    //         data.push([ColorText.blue('Node id'), isSwarm ? info.Swarm.NodeID : '-']);
+    //         data.push([ColorText.blue('Nodes in the cluster'), isSwarm ? info.Swarm.Nodes.toString() : '-']);
+    //         data.push([ColorText.blue('Managers in the cluster'), isSwarm ? info.Swarm.Managers.toString() : '-']);
+
+    //         data.push(['', '']);
+    //         data.push([ColorText.title('Containers'), '']);
+    //         data.push([ColorText.blue('Total'), info.Containers.toString()]);
+    //         data.push([ColorText.blue('Running'), ColorText.cyan(info.ContainersRunning.toString())]);
+    //         data.push([ColorText.blue('Stopped'), ColorText.red(info.ContainersStopped.toString())]);
+    //         data.push([ColorText.blue('Paused'), ColorText.yellow(info.ContainersPaused.toString())]);
+    //     } catch (error) {
+    //         Log.error(error);
+    //         data.push(["Error", error.errno]);
+    //     }
+    //     return data;
+    // }
+
+    // private isSwarm(info: any) {
+    //     return info.Swarm && info.Swarm.LocalNodeState === 'active';
+    // }
+
+    // private role(swarm: any) {
+    //     var localId = swarm.NodeID;
+    //     var isLeader = false;
+    //     swarm.RemoteManagers.forEach((rm: any) => {
+    //         if (rm.NodeID == localId) {
+    //             isLeader = true;
+    //         }
+    //     });
+    //     return isLeader ? 'Leader' : 'Follower';
+    // }
 
     public async listImages() {
         const data = [['Id', 'Repository', 'Tag', 'Size', 'Created']];
@@ -116,22 +173,6 @@ export class Dockerode {
             });
         } catch (error) {
             Log.error(error);
-        }
-        return data;
-    }
-
-    public async totalImages(): Promise<any> {
-        const data = [['', ''], [ColorText.title('Images'), '']];
-        try {
-            const images = await this.docker.listImages();
-            if (!images) {
-                return data;
-            }
-            data.push([ColorText.blue('Total'), images.length ? images.length.toString() : '0']);
-            data.push([ColorText.blue('Size'), this.sizeOf(images) + ' GB'])
-        } catch (error) {
-            Log.error(error);
-            data.push(["Error", error.errno]);
         }
         return data;
     }

@@ -31,6 +31,4 @@ ioc.bind<Widget>("Widget").to(NetworkWidget);
 ioc.bind<Widget>("Widget").to(VolumeWidget);
 ioc.bind<Widget>("Widget").to(HelpWidget);
 
-// ioc.bind<Layout>(TYPES.Layout).to(Screen);
-
 export { ioc, TYPES };
