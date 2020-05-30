@@ -1,6 +1,6 @@
 import { ColorText } from "../color";
 import { Log } from "../log";
-import moment from "moment";
+import { toLocalTime, fromNow } from "../utils"
 import Container from "./container";
 import Image from "./image";
 
@@ -46,7 +46,7 @@ export class Dockerode {
             data.push(['Docker api version', version.ApiVersion]);
             data.push(['Go version', version.GoVersion]);
             data.push(['Build', version.GitCommit]);
-            data.push(['Build time', this.toLocalTime(version.BuildTime)]);
+            data.push(['Build time', toLocalTime(version.BuildTime)]);
         } catch (error) {
             Log.error(error);
             data.push(['Error', error.errno]);
@@ -54,13 +54,8 @@ export class Dockerode {
         return data;
     }
 
-    private toLocalTime(timeString: string) {
-        const time = moment(timeString, "YYYY-MM-DD hh:mm:ss");
-        return time.add(moment().utcOffset() / 60, "hours").format("YYYY-MM-DD hh:mm:ss");
-    }
-
-    public async getStatistics() : Promise<string[][]> {
-        const data = [['Containers', 'Images' , 'Networks', 'Volumes']];
+    public async getStatistics(): Promise<string[][]> {
+        const data = [['Containers', 'Images', 'Networks', 'Volumes']];
         try {
             const info = await this.docker.info();
             if (!info) {
@@ -86,7 +81,7 @@ export class Dockerode {
         return data;
     }
 
-    private async statistic(callback: Function) : Promise<string> {
+    private async statistic(callback: Function): Promise<string> {
         try {
             const result = await callback();
             if (!result) {
@@ -114,50 +109,6 @@ export class Dockerode {
         }
     }
 
-    // public async information(): Promise<any> {
-    //     const data: any[] = [['', ''], [ColorText.title('Swarm Info'), '']];
-    //     try {
-    //         const info = await this.docker.info();
-    //         if (!info) {
-    //             return data;
-    //         }
-    //         const isSwarm = this.isSwarm(info);
-    //         if (isSwarm) {
-    //             data.push([ColorText.blue('(This node is part of a Swarm cluster)'), '']);
-    //         }
-    //         data.push([ColorText.blue('Node role'), isSwarm ? this.role(info.Swarm) : '-']);
-    //         data.push([ColorText.blue('Node id'), isSwarm ? info.Swarm.NodeID : '-']);
-    //         data.push([ColorText.blue('Nodes in the cluster'), isSwarm ? info.Swarm.Nodes.toString() : '-']);
-    //         data.push([ColorText.blue('Managers in the cluster'), isSwarm ? info.Swarm.Managers.toString() : '-']);
-
-    //         data.push(['', '']);
-    //         data.push([ColorText.title('Containers'), '']);
-    //         data.push([ColorText.blue('Total'), info.Containers.toString()]);
-    //         data.push([ColorText.blue('Running'), ColorText.cyan(info.ContainersRunning.toString())]);
-    //         data.push([ColorText.blue('Stopped'), ColorText.red(info.ContainersStopped.toString())]);
-    //         data.push([ColorText.blue('Paused'), ColorText.yellow(info.ContainersPaused.toString())]);
-    //     } catch (error) {
-    //         Log.error(error);
-    //         data.push(["Error", error.errno]);
-    //     }
-    //     return data;
-    // }
-
-    // private isSwarm(info: any) {
-    //     return info.Swarm && info.Swarm.LocalNodeState === 'active';
-    // }
-
-    // private role(swarm: any) {
-    //     var localId = swarm.NodeID;
-    //     var isLeader = false;
-    //     swarm.RemoteManagers.forEach((rm: any) => {
-    //         if (rm.NodeID == localId) {
-    //             isLeader = true;
-    //         }
-    //     });
-    //     return isLeader ? 'Leader' : 'Follower';
-    // }
-
     public async listImages() {
         const data = [['Id', 'Repository', 'Tag', 'Size', 'Created']];
         try {
@@ -168,7 +119,7 @@ export class Dockerode {
             images.forEach((image: any) => {
                 const repoTag = this.getRepoTag(image.RepoTags);
                 const size = (image.Size / 1000 / 1000).toFixed(2) + ' MB';
-                const created = moment(new Date(image.Created * 1000), 'YYYYMMDD').fromNow();
+                const created = fromNow(image.Created);
                 data.push([this.getId(image.Id), repoTag.repo, repoTag.tag, size, created]);
             });
         } catch (error) {
@@ -248,11 +199,11 @@ export class Dockerode {
             } else {
                 row.push('-');
             }
-            row.push('{bold}{cyan-bg}{white-fg}running{/white-fg}{/cyan-bg}{/bold}');
+            row.push(ColorText.RUNNING);
         } else {
             row.push('-');
             row.push('-');
-            row.push('{bold}{red-bg}{white-fg}stopped{/white-fg}{/red-bg}{/bold}');
+            row.push(ColorText.STOPPED);
         }
         return row;
     };
@@ -291,6 +242,25 @@ export class Dockerode {
             Log.error(error);
         }
         return data;
+    }
+
+    /**
+     * monitor stream real-time events from the docker server
+     */
+    public async monitor(change: Function) {
+        try {
+            const stream = await this.docker.getEvents();
+            stream.on('data', (chunk: any) => {
+                const event = JSON.parse(chunk.toString());
+                Log.info(event);
+                if (event.Type === 'container' && (event.Action === 'start' || event.Action === 'stop'
+                    || event.Action === 'create' || event.Action === 'destroy' || event.Action === 'rename')) {
+                    change();
+                }
+            });
+        } catch (error) {
+            Log.error(error);
+        }
     }
 
 }

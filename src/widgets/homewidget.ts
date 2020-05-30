@@ -7,6 +7,7 @@ import { injectable } from "inversify";
 
 const os = require('os');
 import osutils from 'os-utils';
+import { REFRESH_INTERNAL } from "../common/utils";
 
 @injectable()
 export class HomeWidget extends Widget {
@@ -40,7 +41,7 @@ export class HomeWidget extends Widget {
         // Statistics
         this.allElements.push(WidgetRender.text(box, { top: 20, left: 1, width: "100%-4", height: 2 }, ColorText.title('Statistics')));
         this.showStatistics(box);
-  
+
         this.refresh();
     };
 
@@ -71,7 +72,6 @@ export class HomeWidget extends Widget {
         const data = [
             ['Name', os.hostname()],
             ["OS", os.platform() + "-" + os.arch()],
-            ["Release", os.release()],
             ["CPUs", this.getCPUs()],
             ["Memory", (os.totalmem() / 1000 / 1000 / 1000).toFixed(2) + " GB"],
             ["Up Time", (os.uptime() / 60 / 60).toFixed(0) + " Hours"]
@@ -98,10 +98,15 @@ export class HomeWidget extends Widget {
 
     private async showStatistics(box: any) {
         try {
-            const data = await Dockerode.singleton.getStatistics();
             const location = { top: 22, left: 1, width: '100%-4', height: 4 };
             const statisticsTable = WidgetRender.table(box, location);
+            const data = await Dockerode.singleton.getStatistics();
             statisticsTable.setData(data);
+
+            setInterval(async () => {
+                const data = await Dockerode.singleton.getStatistics();
+                statisticsTable.setData(data);
+            }, REFRESH_INTERNAL);
 
             this.allElements.push(statisticsTable);
             this.refresh();

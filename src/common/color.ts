@@ -1,5 +1,8 @@
 export class ColorText {
 
+    static readonly STOPPED = '{bold}{red-bg}{black-fg}stopped{/black-fg}{/red-bg}{/bold}';
+    static readonly RUNNING = '{bold}{green-bg}{black-fg}running{/black-fg}{/green-bg}{/bold}';
+
     public static blue(str: string) {
         return '{blue-fg}' + str + '{/blue-fg}';
     }

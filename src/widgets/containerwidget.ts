@@ -42,17 +42,20 @@ export class ContainerWidget extends Widget {
         try {
             const location = { top: 0, left: 0, width: "100%-2", height: "40%-2" };
             this.table = WidgetRender.table(box, location, "Containers");
+
             const data = await Dockerode.singleton.listContainers();
             this.table.setData(data);
+            this.monitorContainer();
+
             this.table.on("select", (container: any) => {
                 this.showSelectContainer(container);
             });
+
         } catch (error) {
             Log.error(error);
         }
 
         this.text = WidgetRender.text(box, { top: "40%-2", left: 0, width: "100%-2", height: 2 }, "{bold}✔  Container Stats{bold}");
-
         this.cpu = WidgetRender.line({ top: "40%", left: 0, width: "50%-1", height: "30%" }, Color.red, "CPU Usage (%)");
         box.append(this.cpu);
         this.mem = WidgetRender.line({ top: "40%", right: 0, width: "50%-1", height: "30%" }, Color.magenta, "Memory Usage (MB)");
@@ -60,6 +63,18 @@ export class ContainerWidget extends Widget {
         this.net = WidgetRender.line({ left: 0, bottom: 0, width: "50%-1", height: "30%-1" }, Color.white, "Network Usage (KB)", true);
         box.append(this.net);
         this.log = WidgetRender.inspectBox(box, { right: 0, bottom: 0, width: "50%-1", height: "30%-1" }, " Inspect ");
+    }
+
+    /**
+     * monitor container change
+     */
+    private async monitorContainer() {
+        Dockerode.singleton.monitor(async () => {
+            const data = await Dockerode.singleton.listContainers();
+            const childOffset = this.table.childOffset;
+            this.table.setData(data);
+            this.table.move(childOffset - 1);
+        });
     }
 
     private async showSelectContainer(containerItem: any) {
