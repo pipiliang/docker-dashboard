@@ -49,7 +49,7 @@ describe('CPU Usage Test', () => {
     });
 
     it('2. time should be correct', () => {
-        expect(cpu.x[0]).to.equal('09:26:54');
+        expect(cpu.x[0]).to.equal('01:26:54');
     });
 
 });
