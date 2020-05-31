@@ -26,6 +26,10 @@ export class ColorText {
     public static bold(str: string) {
         return '{bold}' + str + '{/bold}';
     }
+
+    public static state(state: string): string {
+        return '{bold}{red-bg}{black-fg}' + state + '{/black-fg}{/red-bg}{/bold}';
+    }
 }
 
 

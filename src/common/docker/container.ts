@@ -1,6 +1,6 @@
 import { Color } from "../color";
 import { Log } from "../log";
-import moment from "moment";
+import { toLocalTime } from "../utils";
 
 /**
  * the instance of container.
@@ -52,12 +52,18 @@ export class StatsStream {
             const txData = new TXData();
             const rxData = new RXData();
             this.stream.on('data', (chunk: any) => {
-                const stat = JSON.parse(chunk.toString());
-                cpuUsage.push(stat);
-                memUsage.push(stat);
-                txData.push(stat);
-                rxData.push(stat);
-                callback(cpuUsage, memUsage, txData, rxData);
+                try {
+                    const stat = JSON.parse(chunk.toString());
+                    cpuUsage.push(stat);
+                    memUsage.push(stat);
+                    txData.push(stat);
+                    rxData.push(stat);
+                    callback(cpuUsage, memUsage, txData, rxData);
+                } catch (error) {
+                    Log.error(error);
+                    // end stream when error happens
+                    this.end();
+                }
             });
         }
     }
@@ -67,11 +73,6 @@ export class StatsStream {
             this.stream.emit('end');
         }
     }
-}
-
-function toLocalTime(timeString: string) {
-    const time = moment(timeString, "YYYY-MM-DD hh:mm:ss");
-    return time.add(moment().utcOffset() / 60, "hours").format('HH:mm:ss');
 }
 
 export abstract class Usage {
@@ -109,12 +110,16 @@ export class CPUUsage extends Usage {
         const time = toLocalTime(stat.read);
         let total = stat.cpu_stats.cpu_usage.total_usage - stat.precpu_stats.cpu_usage.total_usage;
         let system = stat.cpu_stats.system_cpu_usage - stat.precpu_stats.system_cpu_usage;
-        let num = stat.cpu_stats.cpu_usage.percpu_usage.length;
+        let num = 1;
+        if (stat.cpu_stats.cpu_usage.percpu_usage) {
+            num = stat.cpu_stats.cpu_usage.percpu_usage.length;
+        }
 
         if (system > 0.0) {
             let percent = (total / system) * num * 100;
             this.shift()
             this.y.push(percent);
+            Log.info(time);
             this.x.push(time);
         }
     }

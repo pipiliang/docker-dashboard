@@ -1,6 +1,6 @@
 import { ColorText } from "../color";
 import { Log } from "../log";
-import { toLocalTime, fromNow } from "../utils"
+import { toLocalDateTime, fromNow } from "../utils"
 import Container from "./container";
 import Image from "./image";
 
@@ -46,7 +46,7 @@ export class Dockerode {
             data.push(['Docker api version', version.ApiVersion]);
             data.push(['Go version', version.GoVersion]);
             data.push(['Build', version.GitCommit]);
-            data.push(['Build time', toLocalTime(version.BuildTime)]);
+            data.push(['Build time', toLocalDateTime(version.BuildTime)]);
         } catch (error) {
             Log.error(error);
             data.push(['Error', error.errno]);
@@ -194,8 +194,8 @@ export class Dockerode {
             let mode = container.HostConfig.NetworkMode;
             row.push(container.NetworkSettings.Networks[mode == 'default' ? 'bridge' : mode].IPAddress);
             if (container.Ports.length > 0) {
-                let port = container.Ports[0];
-                row.push(port.PrivatePort + ':' + port.PublicPort);
+                const ports = container.Ports.map(port => port.PrivatePort + ':' + port.PublicPort).join(' ');
+                row.push(ports.toString());
             } else {
                 row.push('-');
             }
@@ -203,23 +203,23 @@ export class Dockerode {
         } else {
             row.push('-');
             row.push('-');
-            row.push(ColorText.STOPPED);
+            row.push(ColorText.state(container.State));
         }
         return row;
     };
 
     public async listNetworks() {
-        const data = [['Name', 'Id', 'Scope', 'Driver', 'IPAM Driver', 'IPAM Subnet', 'IPAM Gateway']];
+        const data = [['Name', 'Scope', 'Driver', 'Internal', 'IPAM Driver', 'IPAM Subnet', 'IPAM Gateway']];
         try {
             const nets = await this.docker.listNetworks();
             nets.forEach((net: any) => {
-                const row = [net.Name, net.Id, net.Scope, net.Driver];
-                if (!net.IPAM) {
+                const row = [net.Name, net.Scope, net.Driver, net.Internal];
+                if (net.IPAM) {
                     row.push(net.IPAM.Driver);
                     if (net.IPAM.Config.length > 0) {
                         var c = net.IPAM.Config[0];
-                        row.push(!c.Subnet ? '-' : c.Subnet);
-                        row.push(!c.Gateway ? '-' : c.Gateway);
+                        row.push(!c.Subnet ? '-' : c.Subnet.trim());
+                        row.push(!c.Gateway ? '-' : c.Gateway.trim());
                     }
                 }
                 data.push(row);
@@ -254,7 +254,8 @@ export class Dockerode {
                 const event = JSON.parse(chunk.toString());
                 Log.info(event);
                 if (event.Type === 'container' && (event.Action === 'start' || event.Action === 'stop'
-                    || event.Action === 'create' || event.Action === 'destroy' || event.Action === 'rename')) {
+                    || event.Action === 'create' || event.Action === 'destroy' || event.Action === 'rename'
+                    || event.Action === 'die')) {
                     change();
                 }
             });

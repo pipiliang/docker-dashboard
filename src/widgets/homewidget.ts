@@ -32,11 +32,11 @@ export class HomeWidget extends Widget {
 
     protected async renderWidget(box: any) {
         // System Infomation
-        this.allElements.push(WidgetRender.text(box, { top: 1, left: 1, width: "100%-5", height: 2 }, ColorText.title('System Infomation')));
+        this.allElements.push(WidgetRender.text(box, { top: 1, left: 1, width: "100%-5", height: 2 }, ColorText.title('Host Information')));
         this.showCPUUasge(box);
         this.showSystemInfomation(box);
         // Docker Infomation
-        this.allElements.push(WidgetRender.text(box, { top: 10, left: 1, width: "100%-5", height: 2 }, ColorText.title('Docker Infomation')));
+        this.allElements.push(WidgetRender.text(box, { top: 10, left: 1, width: "100%-5", height: 2 }, ColorText.title('Docker Engine')));
         this.showDockerInfomation(box);
         // Statistics
         this.allElements.push(WidgetRender.text(box, { top: 20, left: 1, width: "100%-4", height: 2 }, ColorText.title('Statistics')));
@@ -70,11 +70,11 @@ export class HomeWidget extends Widget {
 
     private async showSystemInfomation(box: any) {
         const data = [
-            ['Name', os.hostname()],
-            ["OS", os.platform() + "-" + os.arch()],
-            ["CPUs", this.getCPUs()],
-            ["Memory", (os.totalmem() / 1000 / 1000 / 1000).toFixed(2) + " GB"],
-            ["Up Time", (os.uptime() / 60 / 60).toFixed(0) + " Hours"]
+            ['Host Name', os.hostname()],
+            ['OS', os.platform() + '-' + os.arch() + ' ' + os.release()],
+            ['Total CPU', this.getCPUs()],
+            ['Total Memory', (os.totalmem() / 1000 / 1000 / 1000).toFixed(2) + ' GB'],
+            ['Up Time', (os.uptime() / 60 / 60).toFixed(0) + ' Hours']
         ];
         const location = { top: 3, left: 3, width: 50, height: 6 };
         this.allElements.push(WidgetRender.drawInfomation(box, location, data, 22));

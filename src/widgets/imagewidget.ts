@@ -43,6 +43,7 @@ export class ImageWidget extends Widget {
 
             this.text = WidgetRender.text(box, { top: "40%-2", left: 0, width: "100%-2", height: 2 }, "{bold}✔  Image Infomation{bold}");
             this.layerTable = WidgetRender.table(box, { top: "40%", left: 0, width: "100%-2", height: "60%-1" }, "Layers");
+            this.layerTable.setData([['Order', 'Size', 'Layer']]);
         } catch (error) {
             Log.error(error);
         }

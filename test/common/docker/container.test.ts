@@ -1,5 +1,6 @@
 
 import { Usage, CPUUsage } from "../../../src/common/docker/container";
+import { injectable, inject } from "inversify";
 
 import * as mocha from 'mocha';
 import * as chai from 'chai';
@@ -48,7 +49,7 @@ describe('CPU Usage Test', () => {
     });
 
     it('2. time should be correct', () => {
-        expect(cpu.x[0]).to.equal("13:26:54");
+        expect(cpu.x[0]).to.equal('09:26:54');
     });
 
 });

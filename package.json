@@ -33,7 +33,7 @@
   "scripts": {
     "start": "./dist/index.js",
     "build": "node_modules/.bin/tsc -p tsconfig.json  && chmod a+x ./dist/index.js",
-    "test": "node_modules/mocha/bin/mocha --reporter spec --require ts-node/register test/**/*.test.ts"
+    "test": "node_modules/mocha/bin/mocha --recursive --reporter spec --require ts-node/register test/**/**/**.test.ts"
   },
   "repository": {
     "type": "git",

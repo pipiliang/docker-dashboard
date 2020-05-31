@@ -146,10 +146,6 @@ export class WidgetRender {
         return this.drawBox(parent, location, content, ' Help ', Color.black);
     }
 
-    // public static infomationBox(parent: any, location: LocationOptions, content: string): any {
-    //     return this.drawBox(parent, location, content, '');
-    // };
-
     /**
      * draw a box element
      * @param parent : parent element
