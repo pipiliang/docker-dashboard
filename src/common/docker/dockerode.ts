@@ -194,7 +194,11 @@ export class Dockerode {
             let mode = container.HostConfig.NetworkMode;
             row.push(container.NetworkSettings.Networks[mode == 'default' ? 'bridge' : mode].IPAddress);
             if (container.Ports.length > 0) {
-                const ports = container.Ports.map(port => port.PrivatePort + ':' + port.PublicPort).join(' ');
+                const ports = container.Ports.map(port => (
+                    port.PrivatePort + (
+                        port.PublicPort !== undefined ? (":" + port.PublicPort) : ""
+                    )
+                )).join(' ');
                 row.push(ports.toString());
             } else {
                 row.push('-');
